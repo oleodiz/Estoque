@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Estoque Titan</string>
+    <string name="email">Email</string>
+    <string name="sobre">Sobre</string>
+    <string name="senha_usuario">Senha</string>
+    <string name="usuario">Usuário</string>
+    <string name="entrar"><b>Entrar</b></string>
+    <string name="recuperar_senha">Recuperar senha</string>
+    <string name="login_progress">Entrando…</string>
+    <string name="email_invalido">Esse endereço de email é inválido</string>
+    <string name="senha_curta">Essa senha é muito curta</string>
+    <string name="senha_incorreta">A senha está incorreta</string>
+    <string name="campo_obrigatorio">Esse campo é obrigatório</string>
+
+
+    <string name="title_activity_login">Entrar</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Senha</string>
+    <string name="action_sign_in_register">► <b>Entrar</b></string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_forgot_password">Recuperar senha</string>
+    <string name="login_progress_signing_in">Entrando&#8230;</string>
+    <string name="error_invalid_email">Email inválido</string>
+    <string name="error_invalid_password">Senha muito curta</string>
+    <string name="error_incorrect_password">Senha incorreta</string>
+    <string name="error_field_required">Campo obrigatório</string>
+    <string name="title_activity_estoque">Estoque</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Configurações</string>
+</resources>

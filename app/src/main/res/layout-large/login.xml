@@ -1,0 +1,170 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:flatui="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.titan.tablet.Activitys.LoginActivity"
+    >
+
+    <!-- Login progress -->
+    <LinearLayout android:id="@+id/login_status"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        >
+        <ProgressBar style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"/>
+        <TextView
+            android:id="@+id/login_status_message"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:fontFamily="sans-serif-light"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/login_progress_signing_in" />
+    </LinearLayout>
+
+    <!-- Login form -->
+    <ScrollView
+        android:id="@+id/login_form"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:background="@drawable/background"
+        >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            style="@style/LoginFormContainer"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="400dp"
+                android:id="@+id/imageView"
+                android:background="@drawable/logotitan"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"/>
+
+            <LinearLayout style="@style/LoginFormContainer"
+                android:orientation="vertical"
+                android:background="@drawable/borda">
+
+                <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatEditText
+                    android:id="@+id/email"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="60dp"
+                    android:inputType="textEmailAddress"
+                    android:hint="@string/usuario"
+                    android:textSize="30dp"
+                    flatui:fieldStyle="box"
+                    flatui:textAppearance="dark"
+                    />
+
+
+                <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatEditText
+                    android:id="@+id/password"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:hint="@string/prompt_password"
+                    android:textSize="30dp"
+                    android:inputType="textPassword"
+                    android:imeActionLabel="@string/action_sign_in_short"
+                    android:imeActionId="@+id/login"
+                    android:imeOptions="actionUnspecified"
+                    flatui:fieldStyle="box"
+                    flatui:textAppearance="dark"
+                    android:layout_marginTop="20dp"/>
+
+
+
+                <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
+                    android:id="@+id/sign_in_button"
+                    android:layout_gravity="right"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:text="@string/action_sign_in_register"
+                    android:layout_marginTop="20dp"
+                    android:textSize="30dp"
+                    flatui:fontWeight="30dp"
+                    flatui:blockButtonEffectHeight="3dp"
+                    flatui:paddingEnd="60dp"
+                    flatui:paddingStart="60dp"
+                    flatui:theme="@array/sky"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    >
+
+                    <TextView
+                        android:layout_gravity="center"
+                        android:id="@+id/txt_conexao"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="25sp"
+                        android:text="Conectando..."/>
+
+                    <ProgressBar
+                        android:id="@+id/pgb_login"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:indeterminate="true"
+                        android:max="100"
+                        android:minHeight="50dp"
+                        android:minWidth="470dp"
+                        android:progress="1" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/lay_servidor"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|end">
+
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/servidor"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/img_status_servidor"
+                        android:layout_gravity="center"
+                        android:background="@drawable/status_vermelho"/>
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+</merge>

@@ -1,0 +1,177 @@
+<resources>
+    <declare-styleable name="ViewFlow">
+        <attr name="sidebuffer" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="CircleFlowIndicator">
+        <attr name="activeColor" format="color" />
+        <attr name="inactiveColor" format="color" />
+        <attr name="radius" format="dimension" />
+        <attr name="spacing" format="dimension" />
+        <attr name="centered" format="boolean" />
+        <attr name="fadeOut" format="integer" />
+        <attr name="inactiveType">
+            <flag name="stroke" value="0" />
+            <flag name="fill" value="1" />
+        </attr>
+        <attr name="activeType">
+            <flag name="stroke" value="0" />
+            <flag name="fill" value="1" />
+        </attr>
+        <attr name="snap" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="TitleFlowIndicator">
+        <attr name="titlePadding" format="dimension" />
+        <!-- Left/right padding of not active view titles. -->
+        <attr name="clipPadding" format="dimension" />
+        <attr name="selectedColor" format="color" />
+        <attr name="selectedBold" format="boolean" />
+        <attr name="selectedSize" format="dimension" />
+        <attr name="textColor1" format="color" />
+        <attr name="textSize" format="dimension" />
+        <attr name="footerLineHeight" format="dimension" />
+        <attr name="footerColor" format="color" />
+        <attr name="footerTriangleHeight" format="dimension" />
+        <attr name="customTypeface" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="AutofitTextView">
+        <!-- Minimum size of the text. -->
+        <attr name="minTextSize" format="dimension" />
+        <!-- Amount of precision used to calculate the correct text size to fit within its
+        bounds. Lower precision is more precise and takes more time. -->
+        <attr name="precision" format="float" />
+        <!-- Defines whether to automatically resize text to fit to the view's bounds. -->
+        <attr name="sizeToFit" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="image_labeled_button">
+        <attr name="icon_resource" format="reference" />
+        <attr name="icon_label" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="toggle_image_labeled_button">
+        <attr name="icon_resource_off" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="accordion">
+        <attr name="header_layout_id" format="reference" />
+        <attr name="header_layout_fold_button_id" format="reference" />
+        <attr name="header_layout_label_id" format="reference" />
+        <attr name="custom_font" format="string" />
+        <attr name="section_headers" format="reference" />
+        <attr name="section_container" format="reference" />
+        <attr name="section_container_parent" format="reference" />
+        <attr name="section_bottom" format="reference" />
+        <attr name="section_visibility" format="reference"/>
+    </declare-styleable>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference" />
+        <attr name="metaButtonBarButtonStyle" format="reference" />
+    </declare-styleable>
+
+ 
+    <attr name="fontFamily" format="string" />
+    <attr name="fontWeight" format="string" />
+    <attr name="fontExtension" format="string" />
+    <attr name="textAppearance" format="integer">
+        <enum name="none" value="0" />
+        <enum name="dark" value="1" />
+        <enum name="light" value="2" />
+    </attr>
+
+    <attr name="cornerRadius" format="dimension" />
+    <attr name="size" format="dimension" />
+
+    <attr name="dotMargin" format="dimension" />
+
+    <!-- FlatButton -->
+    <declare-styleable name="FlatButton">
+        <attr name="theme" />
+        <attr name="fontFamily" />
+        <attr name="fontWeight" />
+        <attr name="fontExtension" />
+        <attr name="textAppearance" />
+        <attr name="cornerRadius" />
+
+        <!-- Defines the height of the border bottom of the button -->
+        <attr name="blockButtonEffectHeight" format="dimension" />
+    </declare-styleable>
+
+    <!-- Flat Check Box -->
+    <declare-styleable name="FlatCheckBox">
+        <attr name="theme" />
+        <attr name="fontFamily" />
+        <attr name="fontWeight" />
+        <attr name="fontExtension" />
+        <attr name="cornerRadius" />
+        <attr name="size" />
+        <attr name="dotMargin" />
+    </declare-styleable>
+
+    <!-- Flat Edit Text -->
+    <declare-styleable name="FlatEditText">
+        <attr name="theme" />
+        <attr name="fontFamily" />
+        <attr name="fontWeight" />
+        <attr name="fontExtension" />
+        <attr name="textAppearance" />
+        <attr name="cornerRadius" />
+        <attr name="borderWidth" />
+        <attr name="fieldStyle" format="integer">
+            <enum name="flat" value="0" />
+            <enum name="box" value="1" />
+            <enum name="transparent" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <!-- Flat Radio Button -->
+    <declare-styleable name="FlatRadioButton">
+        <attr name="theme" />
+        <attr name="fontFamily" />
+        <attr name="fontWeight" />
+        <attr name="fontExtension" />
+        <attr name="borderWidth" />
+        <attr name="size" />
+        <attr name="dotMargin" />
+    </declare-styleable>
+
+    <!-- Flat Seek Bar -->
+    <declare-styleable name="FlatSeekBar">
+        <attr name="theme" />
+        <attr name="size" />
+    </declare-styleable>
+
+    <!-- Flat Text View -->
+    <declare-styleable name="FlatTextView">
+        <attr name="theme" />
+        <attr name="fontFamily" />
+        <attr name="fontWeight" />
+        <attr name="fontExtension" />
+        <attr name="cornerRadius" />
+        <attr name="borderWidth" />
+        <attr name="textColor" format="integer">
+            <enum name="darker" value="0" />
+            <enum name="dark" value="1" />
+            <enum name="main" value="2" />
+            <enum name="light" value="3" />
+        </attr>
+        <attr name="backgroundColor" format="integer">
+            <enum name="darker" value="0" />
+            <enum name="dark" value="1" />
+            <enum name="main" value="2" />
+            <enum name="light" value="3" />
+        </attr>
+        <attr name="customBackgroundColor" format="color" />
+    </declare-styleable>
+
+    <!-- Flat Toggle Button -->
+    <declare-styleable name="FlatToggleButton">
+        <attr name="theme" />
+        <attr name="cornerRadius" />
+        <attr name="space" format="dimension" />
+    </declare-styleable>
+
+</resources>
