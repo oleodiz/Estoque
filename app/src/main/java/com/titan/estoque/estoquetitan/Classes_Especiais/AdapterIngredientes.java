@@ -3,6 +3,7 @@ package com.titan.estoque.estoquetitan.Classes_Especiais;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +37,7 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
         CardView card_ingrediente;
         TextView txt_descricao;
         TextView txt_quantidade;
+        TextView txt_status;
         ImageView img_ingrediente;
         ProgressBar pro_carregaImg;
         IngredienteViewHolder(View itemView) {
@@ -43,6 +45,7 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
             card_ingrediente = (CardView)itemView.findViewById(R.id.card_ingrediente);
             txt_descricao = (TextView)itemView.findViewById(R.id.txt_descricao);
             txt_quantidade = (TextView)itemView.findViewById(R.id.txt_quantidade);
+            txt_status = (TextView)itemView.findViewById(R.id.txt_status);
             img_ingrediente = (ImageView)itemView.findViewById(R.id.img_ingrediente);
             pro_carregaImg = (ProgressBar)itemView.findViewById(R.id.pro_carregaImg);
         }
@@ -60,6 +63,19 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
         holder.txt_descricao.setText(ingredientes.get(i).descricao);
         String quantidade = ingredientes.get(i).quantidade + ingredientes.get(i).unidade;
         holder.txt_quantidade.setText(quantidade);
+        switch (ingredientes.get(i).id_status_estoque)
+        {
+            case 1:{
+                holder.txt_status.setText(ingredientes.get(i).status);
+                holder.txt_status.setTextColor(Color.rgb(218,83,44));
+                break;
+            }
+            case 2:{
+                holder.txt_status.setText(ingredientes.get(i).status);
+                holder.txt_status.setTextColor(Color.rgb(255,196,13));
+                break;
+            }
+        }
 
         new CarregaImagem().executeOnExecutor(Executors.newFixedThreadPool(4),ingredientes.get(i).id_imagem,holder );
 
@@ -76,7 +92,9 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
         @Override
         protected Void doInBackground(Object... id) {
 
-            img = LoginActivity.c.getImagem((int)id[0]);
+            img = LoginActivity.obterImagem((int) id[0]);
+            if (img == null)
+                img = LoginActivity.c.getImagem((int)id[0]);
             holder = (IngredienteViewHolder)id[1];
             publishProgress();
 
@@ -85,8 +103,10 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
         @Override
         protected void onProgressUpdate(Void... progress) {
 
-            if (img != null && img.id_imagem != 0)
+            if (img != null && img.id_imagem != 0) {
+                LoginActivity.imagens.add(img);
                 holder.img_ingrediente.setImageBitmap(decodeBase64(img.imagem));
+            }
             holder.pro_carregaImg.setVisibility(View.INVISIBLE);
 
         }

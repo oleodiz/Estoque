@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:padding="16dp"
+    android:padding="5dp"
     >
 
     <android.support.v7.widget.CardView
@@ -13,7 +13,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:padding="5dp"
             >
 
             <ImageView
@@ -22,8 +22,7 @@
                 android:id="@+id/img_ingrediente"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginRight="16dp"
-                android:src="@drawable/servidor"
+                android:layout_marginRight="5dp"
                 />
 
             <ProgressBar
@@ -38,15 +37,25 @@
                 android:id="@+id/txt_descricao"
                 android:layout_toRightOf="@+id/img_ingrediente"
                 android:layout_alignParentTop="true"
-                android:textSize="30sp"
+                android:textSize="25sp"
                 />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/txt_quantidade"
+                android:textSize="15sp"
                 android:layout_toRightOf="@+id/img_ingrediente"
                 android:layout_below="@+id/txt_descricao"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_status"
+                android:textSize="15sp"
+                android:layout_toRightOf="@+id/img_ingrediente"
+                android:layout_below="@+id/txt_quantidade"
                 />
 
         </RelativeLayout>

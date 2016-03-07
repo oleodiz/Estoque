@@ -1,5 +1,6 @@
 package com.titan.estoque.estoquetitan.Activitys;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -7,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,9 +18,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.titan.estoque.estoquetitan.Classes_Especiais.AdapterIngredientes;
+import com.titan.estoque.estoquetitan.Classes_Especiais.RecyclerItemClickListener;
 import com.titan.estoque.estoquetitan.Objetos.Ingrediente;
 import com.titan.estoque.estoquetitan.R;
 
@@ -32,6 +36,8 @@ public class EstoqueActivity extends AppCompatActivity
     List<Ingrediente> estoque;
     Context context;
     RecyclerView rec_listaEstoque;
+    LinearLayout lay_viewFlutuante ,lay_area_fora;
+    View entra_sai_layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +45,15 @@ public class EstoqueActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        lay_viewFlutuante = (LinearLayout) findViewById(R.id.lay_viewFlutuante);
+        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        entra_sai_layout = inflater.inflate(R.layout.lay_entrada_saida, lay_viewFlutuante, false);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Processando... mentira", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -64,6 +74,19 @@ public class EstoqueActivity extends AppCompatActivity
 
         context = this;
         estoque = new ArrayList<Ingrediente>();
+
+        LayoutTransition transition = new LayoutTransition();
+        lay_viewFlutuante.setLayoutTransition(transition);
+
+        lay_area_fora = (LinearLayout) entra_sai_layout.findViewById(R.id.lay_area_fora);
+        lay_area_fora.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                lay_viewFlutuante.removeView(entra_sai_layout);
+
+            }
+        });
 
         new CarregaEstoque().executeOnExecutor(Executors.newFixedThreadPool(4));
 
@@ -99,6 +122,16 @@ public class EstoqueActivity extends AppCompatActivity
                 adapterIngredientes = new AdapterIngredientes(estoque, context);
 
             rec_listaEstoque.setAdapter(adapterIngredientes);
+
+            rec_listaEstoque.addOnItemTouchListener(new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    if (lay_viewFlutuante.getChildCount() > 0)
+                        lay_viewFlutuante.removeAllViews();
+
+                    lay_viewFlutuante.addView(entra_sai_layout);
+                }
+            }));
         }
         @Override
         protected void onPostExecute(Void result) {

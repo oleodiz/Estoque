@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -73,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
     private LinearLayout lay_servidor;
     private ProgressBar pgb_login;
 
-
+    public static List<Imagem> imagens;
     public static int id_Funcionario;
     public static Funcionario fun;
     public static Integer id_Bandeira;
@@ -86,7 +87,6 @@ public class LoginActivity extends AppCompatActivity {
 
     public static Boolean logAtivo;
     public static Boolean vivo;
-
 
     public static Conexao c;
     public static LogErro erro;
@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
         IP_Entidade = getIPLocal();
         sContext = getApplicationContext();
         erro = new LogErro(sContext);
-
+        imagens = new ArrayList<Imagem>();
         // Set up the login form.
         mUsuario = getIntent().getStringExtra(EXTRA_EMAIL);
         mEmailView = (EditText) findViewById(R.id.email);
@@ -265,16 +265,22 @@ public class LoginActivity extends AppCompatActivity {
             {
                 pgb_login.setVisibility(View.INVISIBLE);
                 txt_conexao.setVisibility(View.INVISIBLE);
-
             }
-
         }
 
         protected void onPostExecute(Boolean result) {
-
         }
     }
 
+    public static Imagem obterImagem(int id_imagem)
+    {
+        for (int i =0; i < imagens.size(); i++)
+        {
+            if (id_imagem == imagens.get(i).id_imagem)
+                return  imagens.get(i);
+        }
+        return null;
+    }
 
     public static Context getContext() {
         return sContext;
