@@ -2,6 +2,8 @@ package com.titan.estoque.estoquetitan.Activitys;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,11 +20,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
+import com.blackcat.currencyedittext.CurrencyEditText;
 import com.titan.estoque.estoquetitan.Classes_Especiais.AdapterIngredientes;
 import com.titan.estoque.estoquetitan.Classes_Especiais.RecyclerItemClickListener;
+import com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton;
 import com.titan.estoque.estoquetitan.Objetos.Ingrediente;
 import com.titan.estoque.estoquetitan.R;
 
@@ -35,9 +44,19 @@ public class EstoqueActivity extends AppCompatActivity
 
     List<Ingrediente> estoque;
     Context context;
+    FloatingActionButton btn_flutuanteProcessar;
     RecyclerView rec_listaEstoque;
     LinearLayout lay_viewFlutuante ,lay_area_fora;
     View entra_sai_layout;
+    ImageView img_ingredienteSelecionado;
+    TextView txt_descricaoIngredienteSelecionado, txt_quantidadeIngredienteSelecionado;
+    EditText edt_quantidadeIngredienteAdicionada;
+    CurrencyEditText edt_valorIngredienteAdicionado;
+    DatePicker dat_dataVencimentoIngredienteAdicionado;
+    FlatButton btn_cancelar, btn_adiconarIngrediente;
+    ScrollView scr_scroll;
+    View view_ingredienteSelecionado;
+    int posicaoIngredienteSelecioando;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +68,8 @@ public class EstoqueActivity extends AppCompatActivity
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         entra_sai_layout = inflater.inflate(R.layout.lay_entrada_saida, lay_viewFlutuante, false);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        btn_flutuanteProcessar = (FloatingActionButton) findViewById(R.id.fab);
+        btn_flutuanteProcessar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Processando... mentira", Snackbar.LENGTH_LONG)
@@ -79,7 +98,27 @@ public class EstoqueActivity extends AppCompatActivity
         lay_viewFlutuante.setLayoutTransition(transition);
 
         lay_area_fora = (LinearLayout) entra_sai_layout.findViewById(R.id.lay_area_fora);
+        img_ingredienteSelecionado = (ImageView) entra_sai_layout.findViewById(R.id.img_ingrediente);
+        txt_descricaoIngredienteSelecionado = (TextView) entra_sai_layout.findViewById(R.id.txt_descricao);
+        txt_quantidadeIngredienteSelecionado = (TextView) entra_sai_layout.findViewById(R.id.txt_quantidadeAtual);
+        edt_quantidadeIngredienteAdicionada = (EditText) entra_sai_layout.findViewById(R.id.edt_quantidadeEntrada);
+        edt_valorIngredienteAdicionado = (CurrencyEditText) entra_sai_layout.findViewById(R.id.edt_valorEntrada);
+        dat_dataVencimentoIngredienteAdicionado = (DatePicker) entra_sai_layout.findViewById(R.id.dat_dataVencimento);
+        btn_cancelar = (FlatButton) entra_sai_layout.findViewById(R.id.btn_cancelar);
+        btn_adiconarIngrediente = (FlatButton) entra_sai_layout.findViewById(R.id.btn_adicionar);
+        scr_scroll = (ScrollView) entra_sai_layout.findViewById(R.id.scr_scroll);
+
+
         lay_area_fora.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                //lay_viewFlutuante.removeView(entra_sai_layout);
+
+            }
+        });
+
+        btn_cancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -88,13 +127,57 @@ public class EstoqueActivity extends AppCompatActivity
             }
         });
 
+        btn_adiconarIngrediente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if (true)
+                {
+                    //VALIDAR DADOS
+                }
+                else
+                {
+                    //Exibir menssagem?
+                }
+
+                int day = dat_dataVencimentoIngredienteAdicionado.getDayOfMonth();
+                int month = dat_dataVencimentoIngredienteAdicionado.getMonth() + 1;
+                int year = dat_dataVencimentoIngredienteAdicionado.getYear();
+
+                estoque.get(posicaoIngredienteSelecioando).entrada = true;
+                estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada = Double.parseDouble(edt_quantidadeIngredienteAdicionada.getText().toString().replace(".", "").replace(",", "."));
+                estoque.get(posicaoIngredienteSelecioando).valorEntrada = Double.parseDouble(edt_valorIngredienteAdicionado.getText().toString().replace("R$","").replace(".","").replace(",","."));
+                estoque.get(posicaoIngredienteSelecioando).vencimento = day+"/"+month+"/"+year;
+
+                edt_quantidadeIngredienteAdicionada = (EditText) entra_sai_layout.findViewById(R.id.edt_quantidadeEntrada);
+                edt_valorIngredienteAdicionado = (CurrencyEditText) entra_sai_layout.findViewById(R.id.edt_valorEntrada);
+                dat_dataVencimentoIngredienteAdicionado = (DatePicker) entra_sai_layout.findViewById(R.id.dat_dataVencimento);
+
+                lay_viewFlutuante.removeView(entra_sai_layout);
+                TextView txt_entradaSaida = (TextView) view_ingredienteSelecionado.findViewById(R.id.txt_entradaSaida);
+                txt_entradaSaida.setTextColor(Color.GREEN);
+                txt_entradaSaida.setVisibility(View.VISIBLE);
+                String txt = "▲ +"+estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada +estoque.get(posicaoIngredienteSelecioando).unidade +"  (R$"+estoque.get(posicaoIngredienteSelecioando).valorEntrada * estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada+")";
+                txt_entradaSaida.setText(txt);
+
+                btn_flutuanteProcessar.setVisibility(View.VISIBLE);
+
+            }
+        });
+
         new CarregaEstoque().executeOnExecutor(Executors.newFixedThreadPool(4));
 
     }
 
-
-
-
+    @Override
+    public void finish()
+    {
+        if (lay_viewFlutuante.getChildCount() >0)
+            lay_viewFlutuante.removeAllViews();
+        else
+            super.finish();
+    }
 
 
 
@@ -128,8 +211,15 @@ public class EstoqueActivity extends AppCompatActivity
                 public void onItemClick(View view, int position) {
                     if (lay_viewFlutuante.getChildCount() > 0)
                         lay_viewFlutuante.removeAllViews();
-
+                    btn_flutuanteProcessar.setVisibility(View.GONE);
                     lay_viewFlutuante.addView(entra_sai_layout);
+                    img_ingredienteSelecionado.setImageDrawable(((ImageView) view.findViewById(R.id.img_ingrediente)).getDrawable());
+                    txt_descricaoIngredienteSelecionado.setText(((TextView) view.findViewById(R.id.txt_descricao)).getText());
+                    txt_quantidadeIngredienteSelecionado.setText(((TextView) view.findViewById(R.id.txt_quantidade)).getText());
+                    scr_scroll.fullScroll(ScrollView.FOCUS_UP);
+
+                    view_ingredienteSelecionado = view;
+                    posicaoIngredienteSelecioando = position;
                 }
             }));
         }

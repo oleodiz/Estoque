@@ -4,10 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="5dp"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
-    android:paddingTop="5dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.titan.estoque.estoquetitan.Activitys.EstoqueActivity"
     tools:showIn="@layout/app_bar_estoque">

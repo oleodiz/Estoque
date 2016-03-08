@@ -56,6 +56,17 @@
                 android:textSize="15sp"
                 android:layout_toRightOf="@+id/img_ingrediente"
                 android:layout_below="@+id/txt_quantidade"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_entradaSaida"
+                android:textSize="15sp"
+                android:layout_toRightOf="@+id/img_ingrediente"
+                android:layout_below="@+id/txt_status"
+                android:visibility="gone"
                 />
 
         </RelativeLayout>

@@ -16,4 +16,9 @@ public class Ingrediente {
     public String unidade;
     public String status;
     public Boolean ativo;
+
+    public Boolean entrada;
+    public Double quantidadeEntrada;
+    public Double valorEntrada;
+    public String vencimento;
 }

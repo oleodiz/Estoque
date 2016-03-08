@@ -67,12 +67,14 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
         {
             case 1:{
                 holder.txt_status.setText(ingredientes.get(i).status);
-                holder.txt_status.setTextColor(Color.rgb(218,83,44));
+                holder.txt_status.setTextColor(Color.rgb(218, 83, 44));
+                holder.txt_status.setVisibility(View.VISIBLE);
                 break;
             }
             case 2:{
                 holder.txt_status.setText(ingredientes.get(i).status);
-                holder.txt_status.setTextColor(Color.rgb(255,196,13));
+                holder.txt_status.setTextColor(Color.rgb(255, 196, 13));
+                holder.txt_status.setVisibility(View.VISIBLE);
                 break;
             }
         }
