@@ -141,14 +141,13 @@ public class EstoqueActivity extends AppCompatActivity
                     //Exibir menssagem?
                 }
 
-                int day = dat_dataVencimentoIngredienteAdicionado.getDayOfMonth();
-                int month = dat_dataVencimentoIngredienteAdicionado.getMonth() + 1;
-                int year = dat_dataVencimentoIngredienteAdicionado.getYear();
 
                 estoque.get(posicaoIngredienteSelecioando).entrada = true;
                 estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada = Double.parseDouble(edt_quantidadeIngredienteAdicionada.getText().toString().replace(".", "").replace(",", "."));
-                estoque.get(posicaoIngredienteSelecioando).valorEntrada = Double.parseDouble(edt_valorIngredienteAdicionado.getText().toString().replace("R$","").replace(".","").replace(",","."));
-                estoque.get(posicaoIngredienteSelecioando).vencimento = day+"/"+month+"/"+year;
+                estoque.get(posicaoIngredienteSelecioando).valorEntrada = Double.parseDouble(edt_valorIngredienteAdicionado.getText().toString().replace("R$", "").replace(".","").replace(",","."));
+                estoque.get(posicaoIngredienteSelecioando).vencimentoDia = dat_dataVencimentoIngredienteAdicionado.getDayOfMonth();
+                estoque.get(posicaoIngredienteSelecioando).vencimentoMes =  dat_dataVencimentoIngredienteAdicionado.getMonth() + 1;
+                estoque.get(posicaoIngredienteSelecioando).vencimentoAno =  dat_dataVencimentoIngredienteAdicionado.getYear();
 
                 edt_quantidadeIngredienteAdicionada = (EditText) entra_sai_layout.findViewById(R.id.edt_quantidadeEntrada);
                 edt_valorIngredienteAdicionado = (CurrencyEditText) entra_sai_layout.findViewById(R.id.edt_valorEntrada);
@@ -216,6 +215,11 @@ public class EstoqueActivity extends AppCompatActivity
                     img_ingredienteSelecionado.setImageDrawable(((ImageView) view.findViewById(R.id.img_ingrediente)).getDrawable());
                     txt_descricaoIngredienteSelecionado.setText(((TextView) view.findViewById(R.id.txt_descricao)).getText());
                     txt_quantidadeIngredienteSelecionado.setText(((TextView) view.findViewById(R.id.txt_quantidade)).getText());
+
+                    edt_quantidadeIngredienteAdicionada.setText(estoque.get(position).quantidadeEntrada+"");
+                    edt_valorIngredienteAdicionado.setText(estoque.get(position).valorEntrada + "");
+                    if (estoque.get(position).vencimentoAno != 0)
+                        dat_dataVencimentoIngredienteAdicionado.updateDate(estoque.get(position).vencimentoAno,estoque.get(position).vencimentoMes-1, estoque.get(position).vencimentoDia);
                     scr_scroll.fullScroll(ScrollView.FOCUS_UP);
 
                     view_ingredienteSelecionado = view;

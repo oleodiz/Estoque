@@ -11,14 +11,20 @@ public class Ingrediente {
     public String descricao;
     public Integer id_imagem;
     public Integer id_status_estoque;
-    public Double estoque_minimo;
-    public Double quantidade;
+    public double estoque_minimo;
+    public double quantidade;
     public String unidade;
     public String status;
     public Boolean ativo;
 
-    public Boolean entrada;
-    public Double quantidadeEntrada;
-    public Double valorEntrada;
-    public String vencimento;
+    public boolean entrada;
+    public double quantidadeEntrada;
+    public double valorEntrada;
+    public int vencimentoDia;
+    public int vencimentoMes;
+    public int vencimentoAno;
+
+    public boolean saida;
+    public double quantidadeSaida;
+
 }
