@@ -8,6 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/card_ingrediente"
+        android:focusable="true"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         >
 
         <RelativeLayout
@@ -62,7 +65,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/txt_entradaSaida"
+                android:id="@+id/txt_entrada"
                 android:textSize="15sp"
                 android:layout_toRightOf="@+id/img_ingrediente"
                 android:layout_below="@+id/txt_status"

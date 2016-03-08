@@ -18,21 +18,24 @@
     </LinearLayout>
 
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
+        android:background="#FFFFFF"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/card_ingrediente">
 
         <TextView
-            android:layout_marginTop="10dp"
             android:gravity="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:textSize="25sp"
-            android:text="ENTRADA"/>
+            android:text="ENTRADA"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:background="#0060ce"/>
 
         <ScrollView
-            android:layout_marginTop="40dp"
             android:id="@+id/scr_scroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -168,7 +171,7 @@
 
         </ScrollView>
 
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
 
 
 </FrameLayout>

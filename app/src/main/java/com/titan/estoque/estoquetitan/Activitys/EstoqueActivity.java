@@ -3,7 +3,6 @@ package com.titan.estoque.estoquetitan.Activitys;
 import android.animation.LayoutTransition;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -24,7 +23,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -142,24 +140,28 @@ public class EstoqueActivity extends AppCompatActivity
                 }
 
 
-                estoque.get(posicaoIngredienteSelecioando).entrada = true;
-                estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada = Double.parseDouble(edt_quantidadeIngredienteAdicionada.getText().toString().replace(".", "").replace(",", "."));
-                estoque.get(posicaoIngredienteSelecioando).valorEntrada = Double.parseDouble(edt_valorIngredienteAdicionado.getText().toString().replace("R$", "").replace(".","").replace(",","."));
+                estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada = Double.parseDouble(edt_quantidadeIngredienteAdicionada.getText().toString().replace(",", "."));
+                estoque.get(posicaoIngredienteSelecioando).valorEntrada = Double.parseDouble(edt_valorIngredienteAdicionado.getText().toString().replace("R$", "").replace(".", "").replace(",", "."));
                 estoque.get(posicaoIngredienteSelecioando).vencimentoDia = dat_dataVencimentoIngredienteAdicionado.getDayOfMonth();
                 estoque.get(posicaoIngredienteSelecioando).vencimentoMes =  dat_dataVencimentoIngredienteAdicionado.getMonth() + 1;
                 estoque.get(posicaoIngredienteSelecioando).vencimentoAno =  dat_dataVencimentoIngredienteAdicionado.getYear();
+                estoque.get(posicaoIngredienteSelecioando).entrada = estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada >0;
 
                 edt_quantidadeIngredienteAdicionada = (EditText) entra_sai_layout.findViewById(R.id.edt_quantidadeEntrada);
                 edt_valorIngredienteAdicionado = (CurrencyEditText) entra_sai_layout.findViewById(R.id.edt_valorEntrada);
                 dat_dataVencimentoIngredienteAdicionado = (DatePicker) entra_sai_layout.findViewById(R.id.dat_dataVencimento);
 
                 lay_viewFlutuante.removeView(entra_sai_layout);
-                TextView txt_entradaSaida = (TextView) view_ingredienteSelecionado.findViewById(R.id.txt_entradaSaida);
-                txt_entradaSaida.setTextColor(Color.GREEN);
-                txt_entradaSaida.setVisibility(View.VISIBLE);
-                String txt = "▲ +"+estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada +estoque.get(posicaoIngredienteSelecioando).unidade +"  (R$"+estoque.get(posicaoIngredienteSelecioando).valorEntrada * estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada+")";
-                txt_entradaSaida.setText(txt);
+                TextView txt_entrada = (TextView) view_ingredienteSelecionado.findViewById(R.id.txt_entrada);
 
+                if(estoque.get(posicaoIngredienteSelecioando).entrada) {
+                    txt_entrada.setTextColor(Color.GREEN);
+                    txt_entrada.setVisibility(View.VISIBLE);
+                    String txt = "▲ +" + estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada + estoque.get(posicaoIngredienteSelecioando).unidade + "  (R$" + estoque.get(posicaoIngredienteSelecioando).valorEntrada * estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada + ")";
+                    txt_entrada.setText(txt);
+                }
+                else
+                    txt_entrada.setVisibility(View.GONE);
                 btn_flutuanteProcessar.setVisibility(View.VISIBLE);
 
             }
