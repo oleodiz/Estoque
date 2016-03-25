@@ -1,12 +1,9 @@
 package com.titan.estoque.estoquetitan.Activitys;
 
 import android.animation.LayoutTransition;
-import android.app.SearchManager;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -35,21 +32,27 @@ import android.widget.TextView;
 
 import com.blackcat.currencyedittext.CurrencyEditText;
 import com.titan.estoque.estoquetitan.Classes_Especiais.AdapterIngredientes;
-import com.titan.estoque.estoquetitan.Classes_Especiais.RecyclerItemClickListener;
 import com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton;
 import com.titan.estoque.estoquetitan.Objetos.Imagem;
 import com.titan.estoque.estoquetitan.Objetos.Ingrediente;
 import com.titan.estoque.estoquetitan.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.Executors;
+
+import static com.titan.estoque.estoquetitan.Activitys.EstoqueActivity.Ordem.*;
 
 public class EstoqueActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    enum Ordem {A_Z, Z_A, maiorEstoque, menorEstoque, filtrar}
+
     List<Ingrediente> listaIngredientes;
-    List<Ingrediente> listaIngredientesFiltrados;
+    List<Ingrediente> listaIngredientesOrdenados;
+    List<Ingrediente> listaIngredientesOrdenadosEFiltrados;
     Context context;
     FloatingActionButton btn_flutuanteProcessar;
     RecyclerView rec_listaEstoque;
@@ -62,8 +65,10 @@ public class EstoqueActivity extends AppCompatActivity
     DatePicker dat_dataVencimentoIngredienteAdicionado;
     FlatButton btn_cancelar, btn_adiconarIngrediente;
     ScrollView scr_scroll;
+    SearchView barraPesquisa;
     View view_ingredienteSelecionado;
     Ingrediente IngredienteSelecioando;
+    Ordem ordem;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +105,8 @@ public class EstoqueActivity extends AppCompatActivity
 
         context = this;
         listaIngredientes = new ArrayList<Ingrediente>();
-        listaIngredientesFiltrados = new ArrayList<Ingrediente>();
+        listaIngredientesOrdenados = new ArrayList<Ingrediente>();
+        listaIngredientesOrdenadosEFiltrados = new ArrayList<Ingrediente>();
 
         LayoutTransition transition = new LayoutTransition();
         lay_viewFlutuante.setLayoutTransition(transition);
@@ -206,7 +212,7 @@ public class EstoqueActivity extends AppCompatActivity
         protected Void doInBackground(Void... vendas) {
 
             listaIngredientes = LoginActivity.c.getEstoque();
-            listaIngredientesFiltrados.addAll(listaIngredientes);
+            listaIngredientesOrdenados.addAll(listaIngredientes);
             publishProgress();
 
             return null;
@@ -214,8 +220,8 @@ public class EstoqueActivity extends AppCompatActivity
         @Override
         protected void onProgressUpdate(Void... progress) {
 
-            if (listaIngredientes != null && listaIngredientes.size() >0)
-                adapterIngredientes = new AdapterIngredientes(listaIngredientes, context);
+            if (listaIngredientesOrdenados != null && listaIngredientesOrdenados.size() >0)
+                adapterIngredientes = new AdapterIngredientes(listaIngredientesOrdenados, context);
 
             rec_listaEstoque.setAdapter(adapterIngredientes);
 
@@ -308,10 +314,24 @@ public class EstoqueActivity extends AppCompatActivity
 
 
         //Pega o Componente.
-        SearchView mSearchView = (SearchView) menu.findItem(R.id.search)
+        barraPesquisa = (SearchView) menu.findItem(R.id.search)
                 .getActionView();
         //Define um texto de ajuda:
-        mSearchView.setQueryHint("Filtrar");
+        barraPesquisa.setQueryHint("Filtrar");
+
+        barraPesquisa.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4), filtrar);
+                return false;
+            }
+        });
         return true;
     }
 
@@ -337,12 +357,19 @@ public class EstoqueActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4), A_Z);
+
         } else if (id == R.id.nav_gallery) {
+            new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4),Z_A );
+
 
         } else if (id == R.id.nav_slideshow) {
+            new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4), maiorEstoque );
+
 
         } else if (id == R.id.nav_manage) {
+            new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4),menorEstoque );
+
 
         } else if (id == R.id.nav_share) {
 
@@ -359,4 +386,110 @@ public class EstoqueActivity extends AppCompatActivity
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
+
+    private class OrdenaFiltraEstoque extends AsyncTask<Ordem, Void, Void> {
+        AdapterIngredientes adapterIngredientes;
+        @Override
+        protected Void doInBackground(Ordem... ordem) {
+            //filtro = barraPesquisa.getQuery().toString();
+
+            switch (ordem[0])
+            {
+                case A_Z:{ listaIngredientesOrdenados = ordenarAZ(); break;}
+                case Z_A: { listaIngredientesOrdenados = ordenarZA(); break;}
+                case maiorEstoque: { listaIngredientesOrdenados = ordenarEstoqueMaior(); break;}
+                case menorEstoque: { listaIngredientesOrdenados = ordenarEstoqueMenor(); break;}
+            }
+
+            listaIngredientesOrdenadosEFiltrados.clear();
+            listaIngredientesOrdenadosEFiltrados.addAll(listaIngredientesOrdenados);
+
+            filtrarIngredientes(listaIngredientesOrdenadosEFiltrados);
+
+            publishProgress();
+
+            return null;
+        }
+        @Override
+        protected void onProgressUpdate(Void... progress) {
+
+            if (listaIngredientesOrdenadosEFiltrados != null && listaIngredientesOrdenadosEFiltrados.size() >0)
+                adapterIngredientes = new AdapterIngredientes(listaIngredientesOrdenadosEFiltrados, context);
+
+            rec_listaEstoque.setAdapter(adapterIngredientes);
+
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+
+        }
+    }
+
+    List<Ingrediente> ordenarAZ()
+    {
+        List<Ingrediente> ingredientes = new ArrayList<Ingrediente>();
+        ingredientes.addAll(listaIngredientes);
+
+        Collections.sort(ingredientes, new Comparator<Ingrediente>() {
+        public int compare(Ingrediente s1, Ingrediente s2) {
+            return s1.descricao.compareToIgnoreCase(s2.descricao);
+        }
+        });
+
+        return (ingredientes);
+    }
+
+    List<Ingrediente> ordenarZA()
+    {
+        List<Ingrediente> ingredientes = new ArrayList<Ingrediente>();
+        ingredientes.addAll(listaIngredientes);
+
+        Collections.sort(ingredientes, new Comparator<Ingrediente>() {
+            public int compare(Ingrediente s1, Ingrediente s2) {
+                return s2.descricao.compareToIgnoreCase(s1.descricao);
+            }
+        });
+
+        return (ingredientes);
+    }
+
+    List<Ingrediente> ordenarEstoqueMaior()
+    {
+        List<Ingrediente> ingredientes = new ArrayList<Ingrediente>();
+        ingredientes.addAll(listaIngredientes);
+
+        Collections.sort(ingredientes, new Comparator<Ingrediente>() {
+            public int compare(Ingrediente s1, Ingrediente s2) {
+                return s1.quantidade < s2.quantidade ? 1:-1;
+            }
+        });
+
+        return (ingredientes);
+    }
+    List<Ingrediente> ordenarEstoqueMenor()
+    {
+        List<Ingrediente> ingredientes = new ArrayList<Ingrediente>();
+        ingredientes.addAll(listaIngredientes);
+
+        Collections.sort(ingredientes, new Comparator<Ingrediente>() {
+            public int compare(Ingrediente s1, Ingrediente s2) {
+                return s1.quantidade > s2.quantidade ? 1:-1;
+            }
+        });
+
+        return (ingredientes);
+    }
+    List<Ingrediente> filtrarIngredientes(List<Ingrediente> ingredientes)
+    {
+        String filtro = barraPesquisa.getQuery().toString().toUpperCase();
+
+        if (!filtro.equals(""))
+        for (int i = ingredientes.size()-1; i >=0 ; i--)
+            if (!ingredientes.get(i).descricao.toUpperCase().contains(filtro))
+                ingredientes.remove(i);
+
+        return  ingredientes;
+    }
+
+
 }
