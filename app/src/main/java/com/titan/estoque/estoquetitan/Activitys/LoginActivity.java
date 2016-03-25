@@ -84,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
     public static String ConexaoGerencia = "";
     public static String UsuarioGerencia;
     public static String SenhaGerencia;
+    public static EstoqueActivity telaEstoque;
 
     public static Boolean logAtivo;
     public static Boolean vivo;

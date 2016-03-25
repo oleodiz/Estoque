@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+
+        <item android:title="Ordenar por">
+            <menu>
         <item
             android:id="@+id/nav_camera"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Ação 1" />
+            android:title="A - Z" />
         <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Ação 2" />
+            android:title="Z - A" />
         <item
             android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Ação 3" />
+            android:title="Maior estoque" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Ação 4" />
-    </group>
+            android:title="Menor estoque" />
+
+    </menu>
+    </item>
 
     <item android:title="Outros">
         <menu>

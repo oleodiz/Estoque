@@ -1,5 +1,7 @@
 package com.titan.estoque.estoquetitan.Objetos;
 
+import android.media.Image;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
@@ -10,6 +12,7 @@ public class Ingrediente {
     public int id_ingrediente;
     public String descricao;
     public Integer id_imagem;
+    public Image imagem;
     public Integer id_status_estoque;
     public double estoque_minimo;
     public double quantidade;

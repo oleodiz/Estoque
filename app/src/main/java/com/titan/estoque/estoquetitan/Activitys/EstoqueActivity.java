@@ -1,15 +1,22 @@
 package com.titan.estoque.estoquetitan.Activitys;
 
 import android.animation.LayoutTransition;
+import android.app.SearchManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.Base64;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +37,7 @@ import com.blackcat.currencyedittext.CurrencyEditText;
 import com.titan.estoque.estoquetitan.Classes_Especiais.AdapterIngredientes;
 import com.titan.estoque.estoquetitan.Classes_Especiais.RecyclerItemClickListener;
 import com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton;
+import com.titan.estoque.estoquetitan.Objetos.Imagem;
 import com.titan.estoque.estoquetitan.Objetos.Ingrediente;
 import com.titan.estoque.estoquetitan.R;
 
@@ -40,7 +48,8 @@ import java.util.concurrent.Executors;
 public class EstoqueActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    List<Ingrediente> estoque;
+    List<Ingrediente> listaIngredientes;
+    List<Ingrediente> listaIngredientesFiltrados;
     Context context;
     FloatingActionButton btn_flutuanteProcessar;
     RecyclerView rec_listaEstoque;
@@ -54,7 +63,7 @@ public class EstoqueActivity extends AppCompatActivity
     FlatButton btn_cancelar, btn_adiconarIngrediente;
     ScrollView scr_scroll;
     View view_ingredienteSelecionado;
-    int posicaoIngredienteSelecioando;
+    Ingrediente IngredienteSelecioando;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +73,7 @@ public class EstoqueActivity extends AppCompatActivity
 
         lay_viewFlutuante = (LinearLayout) findViewById(R.id.lay_viewFlutuante);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        entra_sai_layout = inflater.inflate(R.layout.lay_entrada_saida, lay_viewFlutuante, false);
+        entra_sai_layout = inflater.inflate(R.layout.lay_entrada, lay_viewFlutuante, false);
 
         btn_flutuanteProcessar = (FloatingActionButton) findViewById(R.id.fab);
         btn_flutuanteProcessar.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +99,8 @@ public class EstoqueActivity extends AppCompatActivity
         rec_listaEstoque.setLayoutManager(llm);
 
         context = this;
-        estoque = new ArrayList<Ingrediente>();
+        listaIngredientes = new ArrayList<Ingrediente>();
+        listaIngredientesFiltrados = new ArrayList<Ingrediente>();
 
         LayoutTransition transition = new LayoutTransition();
         lay_viewFlutuante.setLayoutTransition(transition);
@@ -106,6 +116,7 @@ public class EstoqueActivity extends AppCompatActivity
         btn_adiconarIngrediente = (FlatButton) entra_sai_layout.findViewById(R.id.btn_adicionar);
         scr_scroll = (ScrollView) entra_sai_layout.findViewById(R.id.scr_scroll);
 
+        LoginActivity.telaEstoque = this;
 
         lay_area_fora.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,34 +148,40 @@ public class EstoqueActivity extends AppCompatActivity
                 else
                 {
                     //Exibir menssagem?
+
+                    return;
                 }
 
 
-                estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada = Double.parseDouble(edt_quantidadeIngredienteAdicionada.getText().toString().replace(",", "."));
-                estoque.get(posicaoIngredienteSelecioando).valorEntrada = Double.parseDouble(edt_valorIngredienteAdicionado.getText().toString().replace("R$", "").replace(".", "").replace(",", "."));
-                estoque.get(posicaoIngredienteSelecioando).vencimentoDia = dat_dataVencimentoIngredienteAdicionado.getDayOfMonth();
-                estoque.get(posicaoIngredienteSelecioando).vencimentoMes =  dat_dataVencimentoIngredienteAdicionado.getMonth() + 1;
-                estoque.get(posicaoIngredienteSelecioando).vencimentoAno =  dat_dataVencimentoIngredienteAdicionado.getYear();
-                estoque.get(posicaoIngredienteSelecioando).entrada = estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada >0;
+                IngredienteSelecioando.quantidadeEntrada = Double.parseDouble(edt_quantidadeIngredienteAdicionada.getText().toString().replace(",", "."));
+                IngredienteSelecioando.valorEntrada = Double.parseDouble(edt_valorIngredienteAdicionado.getText().toString().replace("R$", "").replace(".", "").replace(",", "."));
+                IngredienteSelecioando.vencimentoDia = dat_dataVencimentoIngredienteAdicionado.getDayOfMonth();
+                IngredienteSelecioando.vencimentoMes =  dat_dataVencimentoIngredienteAdicionado.getMonth() + 1;
+                IngredienteSelecioando.vencimentoAno =  dat_dataVencimentoIngredienteAdicionado.getYear();
+                IngredienteSelecioando.entrada = IngredienteSelecioando.quantidadeEntrada >0;
 
                 edt_quantidadeIngredienteAdicionada = (EditText) entra_sai_layout.findViewById(R.id.edt_quantidadeEntrada);
                 edt_valorIngredienteAdicionado = (CurrencyEditText) entra_sai_layout.findViewById(R.id.edt_valorEntrada);
                 dat_dataVencimentoIngredienteAdicionado = (DatePicker) entra_sai_layout.findViewById(R.id.dat_dataVencimento);
 
                 lay_viewFlutuante.removeView(entra_sai_layout);
+
+                /*
                 TextView txt_entrada = (TextView) view_ingredienteSelecionado.findViewById(R.id.txt_entrada);
 
-                if(estoque.get(posicaoIngredienteSelecioando).entrada) {
+                if(IngredienteSelecioando.entrada) {
                     txt_entrada.setTextColor(Color.GREEN);
                     txt_entrada.setVisibility(View.VISIBLE);
-                    String txt = "▲ +" + estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada + estoque.get(posicaoIngredienteSelecioando).unidade + "  (R$" + estoque.get(posicaoIngredienteSelecioando).valorEntrada * estoque.get(posicaoIngredienteSelecioando).quantidadeEntrada + ")";
+                    String txt = "▲ +" + IngredienteSelecioando.quantidadeEntrada + IngredienteSelecioando.unidade + "  (R$" + IngredienteSelecioando.valorEntrada *IngredienteSelecioando.quantidadeEntrada + ")";
                     txt_entrada.setText(txt);
                 }
                 else
                     txt_entrada.setVisibility(View.GONE);
                 btn_flutuanteProcessar.setVisibility(View.VISIBLE);
+                */
 
             }
+
         });
 
         new CarregaEstoque().executeOnExecutor(Executors.newFixedThreadPool(4));
@@ -183,18 +200,13 @@ public class EstoqueActivity extends AppCompatActivity
 
 
 
-
-
-
-
-
     private class CarregaEstoque extends AsyncTask<Void, Void, Void> {
         AdapterIngredientes adapterIngredientes;
         @Override
         protected Void doInBackground(Void... vendas) {
 
-            estoque = LoginActivity.c.getEstoque();
-
+            listaIngredientes = LoginActivity.c.getEstoque();
+            listaIngredientesFiltrados.addAll(listaIngredientes);
             publishProgress();
 
             return null;
@@ -202,11 +214,12 @@ public class EstoqueActivity extends AppCompatActivity
         @Override
         protected void onProgressUpdate(Void... progress) {
 
-            if (estoque != null && estoque.size() >0)
-                adapterIngredientes = new AdapterIngredientes(estoque, context);
+            if (listaIngredientes != null && listaIngredientes.size() >0)
+                adapterIngredientes = new AdapterIngredientes(listaIngredientes, context);
 
             rec_listaEstoque.setAdapter(adapterIngredientes);
 
+            /*
             rec_listaEstoque.addOnItemTouchListener(new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
@@ -218,22 +231,52 @@ public class EstoqueActivity extends AppCompatActivity
                     txt_descricaoIngredienteSelecionado.setText(((TextView) view.findViewById(R.id.txt_descricao)).getText());
                     txt_quantidadeIngredienteSelecionado.setText(((TextView) view.findViewById(R.id.txt_quantidade)).getText());
 
-                    edt_quantidadeIngredienteAdicionada.setText(estoque.get(position).quantidadeEntrada+"");
-                    edt_valorIngredienteAdicionado.setText(estoque.get(position).valorEntrada + "");
-                    if (estoque.get(position).vencimentoAno != 0)
-                        dat_dataVencimentoIngredienteAdicionado.updateDate(estoque.get(position).vencimentoAno,estoque.get(position).vencimentoMes-1, estoque.get(position).vencimentoDia);
+                    edt_quantidadeIngredienteAdicionada.setText(listaIngredientes.get(position).quantidadeEntrada+"");
+                    edt_valorIngredienteAdicionado.setText(listaIngredientes.get(position).valorEntrada + "");
+                    if (listaIngredientes.get(position).vencimentoAno != 0)
+                        dat_dataVencimentoIngredienteAdicionado.updateDate(listaIngredientes.get(position).vencimentoAno, listaIngredientes.get(position).vencimentoMes-1, listaIngredientes.get(position).vencimentoDia);
                     scr_scroll.fullScroll(ScrollView.FOCUS_UP);
 
                     view_ingredienteSelecionado = view;
-                    posicaoIngredienteSelecioando = position;
+                    //posicaoIngredienteSelecioando = position;
                 }
             }));
+            */
         }
         @Override
         protected void onPostExecute(Void result) {
 
         }
     }
+
+    public void clickIngrediente(int id_ingrediente)
+    {
+        if (lay_viewFlutuante.getChildCount() > 0)
+            lay_viewFlutuante.removeAllViews();
+        btn_flutuanteProcessar.setVisibility(View.GONE);
+        lay_viewFlutuante.addView(entra_sai_layout);
+
+        Ingrediente ing = buscaIngrediente(id_ingrediente);
+
+        if (ing != null) {
+
+            Imagem img = LoginActivity.obterImagem(ing.id_imagem);
+
+            img_ingredienteSelecionado.setImageBitmap(decodeBase64(img.imagem));
+            txt_descricaoIngredienteSelecionado.setText(ing.descricao);
+            txt_quantidadeIngredienteSelecionado.setText(ing.quantidade + "");
+
+            edt_quantidadeIngredienteAdicionada.setText(ing.quantidadeEntrada + "");
+            edt_valorIngredienteAdicionado.setText(ing.valorEntrada + "");
+            if (ing.vencimentoAno != 0)
+                dat_dataVencimentoIngredienteAdicionado.updateDate(ing.vencimentoAno, ing.vencimentoMes - 1, ing.vencimentoDia);
+            scr_scroll.fullScroll(ScrollView.FOCUS_UP);
+
+            //view_ingredienteSelecionado = view;
+            IngredienteSelecioando = ing;
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -245,10 +288,30 @@ public class EstoqueActivity extends AppCompatActivity
         }
     }
 
+
+    public Ingrediente buscaIngrediente(int id_ingrediente)
+    {
+        for (Ingrediente i : listaIngredientes)
+        {
+            if (i.id_ingrediente == id_ingrediente)
+                return i;
+        }
+
+        return null;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.estoque, menu);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.estoque, menu);
+
+
+        //Pega o Componente.
+        SearchView mSearchView = (SearchView) menu.findItem(R.id.search)
+                .getActionView();
+        //Define um texto de ajuda:
+        mSearchView.setQueryHint("Filtrar");
         return true;
     }
 
@@ -290,5 +353,10 @@ public class EstoqueActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    public static Bitmap decodeBase64(String input)
+    {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
 }

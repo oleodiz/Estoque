@@ -11,6 +11,7 @@ import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,23 +32,35 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
     Context context;
     public AdapterIngredientes(List<Ingrediente> ingredientes, Context context){
         this.ingredientes = ingredientes;
+        this.context = context;
     }
 
     public static class IngredienteViewHolder extends RecyclerView.ViewHolder {
+
         CardView card_ingrediente;
         TextView txt_descricao;
+        TextView txt_idIngrediente;
         TextView txt_quantidade;
         TextView txt_status;
+        TextView txt_entrada;
         ImageView img_ingrediente;
         ProgressBar pro_carregaImg;
+        Button btn_entrada;
+        Button btn_saida;
+        Button btn_informacao;
         IngredienteViewHolder(View itemView) {
             super(itemView);
             card_ingrediente = (CardView)itemView.findViewById(R.id.card_ingrediente);
+            txt_idIngrediente = (TextView)itemView.findViewById(R.id.txt_idIngrediente);
             txt_descricao = (TextView)itemView.findViewById(R.id.txt_descricao);
             txt_quantidade = (TextView)itemView.findViewById(R.id.txt_quantidade);
             txt_status = (TextView)itemView.findViewById(R.id.txt_status);
+            txt_entrada = (TextView)itemView.findViewById(R.id.txt_entrada);
             img_ingrediente = (ImageView)itemView.findViewById(R.id.img_ingrediente);
             pro_carregaImg = (ProgressBar)itemView.findViewById(R.id.pro_carregaImg);
+            btn_entrada = (Button)itemView.findViewById(R.id.btn_entrada);
+            btn_saida = (Button)itemView.findViewById(R.id.btn_saida);
+            btn_informacao = (Button)itemView.findViewById(R.id.btn_informacao);
         }
     }
 
@@ -59,10 +72,12 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
     }
 
     @Override
-    public void onBindViewHolder(IngredienteViewHolder holder, int i) {
+    public void onBindViewHolder(IngredienteViewHolder holder, final int i) {
+        holder.txt_idIngrediente.setText(ingredientes.get(i).id_ingrediente+"");
         holder.txt_descricao.setText(ingredientes.get(i).descricao);
         String quantidade = ingredientes.get(i).quantidade + ingredientes.get(i).unidade;
         holder.txt_quantidade.setText(quantidade);
+
         switch (ingredientes.get(i).id_status_estoque)
         {
             case 1:{
@@ -79,10 +94,27 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
             }
         }
 
-        new CarregaImagem().executeOnExecutor(Executors.newFixedThreadPool(4),ingredientes.get(i).id_imagem,holder );
+        new CarregaImagem().executeOnExecutor(Executors.newFixedThreadPool(4), ingredientes.get(i).id_imagem, holder);
 
+        if(ingredientes.get(i).entrada) {
+            holder.txt_entrada.setTextColor(Color.GREEN);
+            holder.txt_entrada.setVisibility(View.VISIBLE);
+            String txt = "▲ +" + ingredientes.get(i).quantidadeEntrada + ingredientes.get(i).unidade + "  (R$" + ingredientes.get(i).valorEntrada *ingredientes.get(i).quantidadeEntrada + ")";
+            holder.txt_entrada.setText(txt);
+        }
+        else
+            holder.txt_entrada.setVisibility(View.GONE);
+
+        holder.btn_entrada.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginActivity.telaEstoque.clickIngrediente(ingredientes.get(i).id_ingrediente);
+            }
+        });
+        holder.itemView.setTag(ingredientes.get(i));
 
     }
+
     @Override
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
