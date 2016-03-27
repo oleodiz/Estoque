@@ -2,8 +2,10 @@ package com.titan.estoque.estoquetitan.Activitys;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -29,14 +32,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.blackcat.currencyedittext.CurrencyEditText;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.titan.estoque.estoquetitan.Classes_Especiais.AdapterIngredientes;
 import com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton;
 import com.titan.estoque.estoquetitan.Objetos.Imagem;
 import com.titan.estoque.estoquetitan.Objetos.Ingrediente;
 import com.titan.estoque.estoquetitan.R;
 
+import java.lang.reflect.Type;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,13 +58,16 @@ public class EstoqueActivity extends AppCompatActivity
 
     enum Ordem {A_Z, Z_A, maiorEstoque, menorEstoque, filtrar}
 
+    SharedPreferences mPrefs;
+
     List<Ingrediente> listaIngredientes;
     List<Ingrediente> listaIngredientesOrdenados;
     List<Ingrediente> listaIngredientesOrdenadosEFiltrados;
     Context context;
     FloatingActionButton btn_flutuanteProcessar;
     RecyclerView rec_listaEstoque;
-    LinearLayout lay_viewFlutuante ,lay_area_fora;
+    AdapterIngredientes adapterIngredientes;
+    LinearLayout lay_viewFlutuante, lay_area_fora;
     View entra_sai_layout;
     ImageView img_ingredienteSelecionado;
     TextView txt_descricaoIngredienteSelecionado, txt_quantidadeIngredienteSelecionado;
@@ -69,13 +80,14 @@ public class EstoqueActivity extends AppCompatActivity
     View view_ingredienteSelecionado;
     Ingrediente IngredienteSelecioando;
     Ordem ordem;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_estoque);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        mPrefs = getPreferences(MODE_PRIVATE);
         lay_viewFlutuante = (LinearLayout) findViewById(R.id.lay_viewFlutuante);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         entra_sai_layout = inflater.inflate(R.layout.lay_entrada, lay_viewFlutuante, false);
@@ -147,12 +159,9 @@ public class EstoqueActivity extends AppCompatActivity
             public void onClick(View view) {
 
 
-                if (true)
-                {
+                if (true) {
                     //VALIDAR DADOS
-                }
-                else
-                {
+                } else {
                     //Exibir menssagem?
 
                     return;
@@ -162,9 +171,9 @@ public class EstoqueActivity extends AppCompatActivity
                 IngredienteSelecioando.quantidadeEntrada = Double.parseDouble(edt_quantidadeIngredienteAdicionada.getText().toString().replace(",", "."));
                 IngredienteSelecioando.valorEntrada = Double.parseDouble(edt_valorIngredienteAdicionado.getText().toString().replace("R$", "").replace(".", "").replace(",", "."));
                 IngredienteSelecioando.vencimentoDia = dat_dataVencimentoIngredienteAdicionado.getDayOfMonth();
-                IngredienteSelecioando.vencimentoMes =  dat_dataVencimentoIngredienteAdicionado.getMonth() + 1;
-                IngredienteSelecioando.vencimentoAno =  dat_dataVencimentoIngredienteAdicionado.getYear();
-                IngredienteSelecioando.entrada = IngredienteSelecioando.quantidadeEntrada >0;
+                IngredienteSelecioando.vencimentoMes = dat_dataVencimentoIngredienteAdicionado.getMonth() + 1;
+                IngredienteSelecioando.vencimentoAno = dat_dataVencimentoIngredienteAdicionado.getYear();
+                IngredienteSelecioando.entrada = IngredienteSelecioando.quantidadeEntrada > 0;
 
                 edt_quantidadeIngredienteAdicionada = (EditText) entra_sai_layout.findViewById(R.id.edt_quantidadeEntrada);
                 edt_valorIngredienteAdicionado = (CurrencyEditText) entra_sai_layout.findViewById(R.id.edt_valorEntrada);
@@ -172,91 +181,107 @@ public class EstoqueActivity extends AppCompatActivity
 
                 lay_viewFlutuante.removeView(entra_sai_layout);
 
-                /*
-                TextView txt_entrada = (TextView) view_ingredienteSelecionado.findViewById(R.id.txt_entrada);
 
-                if(IngredienteSelecioando.entrada) {
-                    txt_entrada.setTextColor(Color.GREEN);
-                    txt_entrada.setVisibility(View.VISIBLE);
-                    String txt = "▲ +" + IngredienteSelecioando.quantidadeEntrada + IngredienteSelecioando.unidade + "  (R$" + IngredienteSelecioando.valorEntrada *IngredienteSelecioando.quantidadeEntrada + ")";
-                    txt_entrada.setText(txt);
-                }
-                else
-                    txt_entrada.setVisibility(View.GONE);
-                btn_flutuanteProcessar.setVisibility(View.VISIBLE);
-                */
+                new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4), filtrar);
 
+                salvaNaMemoria();
             }
 
         });
 
         new CarregaEstoque().executeOnExecutor(Executors.newFixedThreadPool(4));
+    }
 
+
+    List<Ingrediente> carregarDaMemoria() {
+        Gson gson = new Gson();
+        String json = mPrefs.getString("Ingredientes", "");
+        Type listType = new TypeToken<ArrayList<Ingrediente>>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    void salvaNaMemoria()
+    {
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(listaIngredientes);
+        prefsEditor.putString("Ingredientes", json);
+        prefsEditor.apply();
     }
 
     @Override
-    public void finish()
-    {
-        if (lay_viewFlutuante.getChildCount() >0)
+    public void finish() {
+        if (lay_viewFlutuante.getChildCount() > 0)
             lay_viewFlutuante.removeAllViews();
-        else
+        else {
+            LoginActivity.c = null;
+            System.exit(0);
             super.finish();
+        }
     }
 
 
+    private class CarregaEstoque extends AsyncTask<Void, Void, Boolean> {
 
-
-    private class CarregaEstoque extends AsyncTask<Void, Void, Void> {
-        AdapterIngredientes adapterIngredientes;
         @Override
-        protected Void doInBackground(Void... vendas) {
+        protected Boolean doInBackground(Void... vendas) {
+            List<Ingrediente> ingredientesSessaoAnterior = carregarDaMemoria();
+            try {
+                if (LoginActivity.c == null || LoginActivity.c.conn.isClosed())
+                    listaIngredientes = ingredientesSessaoAnterior;
+                else {
+                    listaIngredientes = LoginActivity.c.getEstoque();
+                }
+            } catch (Exception e) {
+                return false;
+            }
 
-            listaIngredientes = LoginActivity.c.getEstoque();
+            if (listaIngredientes != null && listaIngredientes.size() >0)
+                for (int i =0; i < ingredientesSessaoAnterior.size(); i++)
+                {
+                    for (int j =0; j < listaIngredientes.size(); j++)
+                    {
+                        if (ingredientesSessaoAnterior.get(i).id_ingrediente == listaIngredientes.get(j).id_ingrediente)
+                        {
+                            listaIngredientes.get(j).entrada = ingredientesSessaoAnterior.get(i).entrada;
+                            listaIngredientes.get(j).quantidadeEntrada = ingredientesSessaoAnterior.get(i).quantidadeEntrada;
+                            listaIngredientes.get(j).valorEntrada = ingredientesSessaoAnterior.get(i).valorEntrada;
+                            listaIngredientes.get(j).vencimentoDia = ingredientesSessaoAnterior.get(i).vencimentoDia;
+                            listaIngredientes.get(j).vencimentoMes = ingredientesSessaoAnterior.get(i).vencimentoMes;
+                            listaIngredientes.get(j).vencimentoAno = ingredientesSessaoAnterior.get(i).vencimentoAno;
+
+                            listaIngredientes.get(j).saida = ingredientesSessaoAnterior.get(i).saida;
+                            listaIngredientes.get(j).quantidadeSaida = ingredientesSessaoAnterior.get(i).quantidadeSaida;
+                            break;
+                        }
+                    }
+                }
             listaIngredientesOrdenados.addAll(listaIngredientes);
             publishProgress();
 
-            return null;
+            return true;
         }
+
         @Override
         protected void onProgressUpdate(Void... progress) {
 
-            if (listaIngredientesOrdenados != null && listaIngredientesOrdenados.size() >0)
+            if (listaIngredientesOrdenados != null && listaIngredientesOrdenados.size() > 0)
                 adapterIngredientes = new AdapterIngredientes(listaIngredientesOrdenados, context);
 
             rec_listaEstoque.setAdapter(adapterIngredientes);
-
-            /*
-            rec_listaEstoque.addOnItemTouchListener(new RecyclerItemClickListener(context, new RecyclerItemClickListener.OnItemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    if (lay_viewFlutuante.getChildCount() > 0)
-                        lay_viewFlutuante.removeAllViews();
-                    btn_flutuanteProcessar.setVisibility(View.GONE);
-                    lay_viewFlutuante.addView(entra_sai_layout);
-                    img_ingredienteSelecionado.setImageDrawable(((ImageView) view.findViewById(R.id.img_ingrediente)).getDrawable());
-                    txt_descricaoIngredienteSelecionado.setText(((TextView) view.findViewById(R.id.txt_descricao)).getText());
-                    txt_quantidadeIngredienteSelecionado.setText(((TextView) view.findViewById(R.id.txt_quantidade)).getText());
-
-                    edt_quantidadeIngredienteAdicionada.setText(listaIngredientes.get(position).quantidadeEntrada+"");
-                    edt_valorIngredienteAdicionado.setText(listaIngredientes.get(position).valorEntrada + "");
-                    if (listaIngredientes.get(position).vencimentoAno != 0)
-                        dat_dataVencimentoIngredienteAdicionado.updateDate(listaIngredientes.get(position).vencimentoAno, listaIngredientes.get(position).vencimentoMes-1, listaIngredientes.get(position).vencimentoDia);
-                    scr_scroll.fullScroll(ScrollView.FOCUS_UP);
-
-                    view_ingredienteSelecionado = view;
-                    //posicaoIngredienteSelecioando = position;
-                }
-            }));
-            */
+            salvaNaMemoria();
         }
+
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(Boolean result) {
+            if (!result)
+                Toast.makeText(context, "Sem conexao com o servidor", Toast.LENGTH_LONG).show();
 
         }
     }
 
-    public void clickIngrediente(int id_ingrediente)
-    {
+    public void clickIngrediente(int id_ingrediente) {
         if (lay_viewFlutuante.getChildCount() > 0)
             lay_viewFlutuante.removeAllViews();
         btn_flutuanteProcessar.setVisibility(View.GONE);
@@ -268,7 +293,8 @@ public class EstoqueActivity extends AppCompatActivity
 
             Imagem img = LoginActivity.obterImagem(ing.id_imagem);
 
-            img_ingredienteSelecionado.setImageBitmap(decodeBase64(img.imagem));
+            if (img != null)
+                img_ingredienteSelecionado.setImageBitmap(decodeBase64(img.imagem));
             txt_descricaoIngredienteSelecionado.setText(ing.descricao);
             txt_quantidadeIngredienteSelecionado.setText(ing.quantidade + "");
 
@@ -295,10 +321,8 @@ public class EstoqueActivity extends AppCompatActivity
     }
 
 
-    public Ingrediente buscaIngrediente(int id_ingrediente)
-    {
-        for (Ingrediente i : listaIngredientes)
-        {
+    public Ingrediente buscaIngrediente(int id_ingrediente) {
+        for (Ingrediente i : listaIngredientes) {
             if (i.id_ingrediente == id_ingrediente)
                 return i;
         }
@@ -360,15 +384,15 @@ public class EstoqueActivity extends AppCompatActivity
             new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4), A_Z);
 
         } else if (id == R.id.nav_gallery) {
-            new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4),Z_A );
+            new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4), Z_A);
 
 
         } else if (id == R.id.nav_slideshow) {
-            new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4), maiorEstoque );
+            new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4), maiorEstoque);
 
 
         } else if (id == R.id.nav_manage) {
-            new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4),menorEstoque );
+            new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4), menorEstoque);
 
 
         } else if (id == R.id.nav_share) {
@@ -381,24 +405,36 @@ public class EstoqueActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-    public static Bitmap decodeBase64(String input)
-    {
+
+    public static Bitmap decodeBase64(String input) {
         byte[] decodedByte = Base64.decode(input, 0);
         return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
     }
 
     private class OrdenaFiltraEstoque extends AsyncTask<Ordem, Void, Void> {
         AdapterIngredientes adapterIngredientes;
+
         @Override
         protected Void doInBackground(Ordem... ordem) {
             //filtro = barraPesquisa.getQuery().toString();
 
-            switch (ordem[0])
-            {
-                case A_Z:{ listaIngredientesOrdenados = ordenarAZ(); break;}
-                case Z_A: { listaIngredientesOrdenados = ordenarZA(); break;}
-                case maiorEstoque: { listaIngredientesOrdenados = ordenarEstoqueMaior(); break;}
-                case menorEstoque: { listaIngredientesOrdenados = ordenarEstoqueMenor(); break;}
+            switch (ordem[0]) {
+                case A_Z: {
+                    listaIngredientesOrdenados = ordenarAZ();
+                    break;
+                }
+                case Z_A: {
+                    listaIngredientesOrdenados = ordenarZA();
+                    break;
+                }
+                case maiorEstoque: {
+                    listaIngredientesOrdenados = ordenarEstoqueMaior();
+                    break;
+                }
+                case menorEstoque: {
+                    listaIngredientesOrdenados = ordenarEstoqueMenor();
+                    break;
+                }
             }
 
             listaIngredientesOrdenadosEFiltrados.clear();
@@ -410,37 +446,37 @@ public class EstoqueActivity extends AppCompatActivity
 
             return null;
         }
+
         @Override
         protected void onProgressUpdate(Void... progress) {
 
-            if (listaIngredientesOrdenadosEFiltrados != null && listaIngredientesOrdenadosEFiltrados.size() >0)
+            if (listaIngredientesOrdenadosEFiltrados != null && listaIngredientesOrdenadosEFiltrados.size() > 0)
                 adapterIngredientes = new AdapterIngredientes(listaIngredientesOrdenadosEFiltrados, context);
 
             rec_listaEstoque.setAdapter(adapterIngredientes);
 
         }
+
         @Override
         protected void onPostExecute(Void result) {
 
         }
     }
 
-    List<Ingrediente> ordenarAZ()
-    {
+    List<Ingrediente> ordenarAZ() {
         List<Ingrediente> ingredientes = new ArrayList<Ingrediente>();
         ingredientes.addAll(listaIngredientes);
 
         Collections.sort(ingredientes, new Comparator<Ingrediente>() {
-        public int compare(Ingrediente s1, Ingrediente s2) {
-            return s1.descricao.compareToIgnoreCase(s2.descricao);
-        }
+            public int compare(Ingrediente s1, Ingrediente s2) {
+                return s1.descricao.compareToIgnoreCase(s2.descricao);
+            }
         });
 
         return (ingredientes);
     }
 
-    List<Ingrediente> ordenarZA()
-    {
+    List<Ingrediente> ordenarZA() {
         List<Ingrediente> ingredientes = new ArrayList<Ingrediente>();
         ingredientes.addAll(listaIngredientes);
 
@@ -453,42 +489,41 @@ public class EstoqueActivity extends AppCompatActivity
         return (ingredientes);
     }
 
-    List<Ingrediente> ordenarEstoqueMaior()
-    {
+    List<Ingrediente> ordenarEstoqueMaior() {
         List<Ingrediente> ingredientes = new ArrayList<Ingrediente>();
         ingredientes.addAll(listaIngredientes);
 
         Collections.sort(ingredientes, new Comparator<Ingrediente>() {
             public int compare(Ingrediente s1, Ingrediente s2) {
-                return s1.quantidade < s2.quantidade ? 1:-1;
+                return s1.quantidade < s2.quantidade ? 1 : -1;
             }
         });
 
         return (ingredientes);
     }
-    List<Ingrediente> ordenarEstoqueMenor()
-    {
+
+    List<Ingrediente> ordenarEstoqueMenor() {
         List<Ingrediente> ingredientes = new ArrayList<Ingrediente>();
         ingredientes.addAll(listaIngredientes);
 
         Collections.sort(ingredientes, new Comparator<Ingrediente>() {
             public int compare(Ingrediente s1, Ingrediente s2) {
-                return s1.quantidade > s2.quantidade ? 1:-1;
+                return s1.quantidade > s2.quantidade ? 1 : -1;
             }
         });
 
         return (ingredientes);
     }
-    List<Ingrediente> filtrarIngredientes(List<Ingrediente> ingredientes)
-    {
+
+    List<Ingrediente> filtrarIngredientes(List<Ingrediente> ingredientes) {
         String filtro = barraPesquisa.getQuery().toString().toUpperCase();
 
         if (!filtro.equals(""))
-        for (int i = ingredientes.size()-1; i >=0 ; i--)
-            if (!ingredientes.get(i).descricao.toUpperCase().contains(filtro))
-                ingredientes.remove(i);
+            for (int i = ingredientes.size() - 1; i >= 0; i--)
+                if (!ingredientes.get(i).descricao.toUpperCase().contains(filtro))
+                    ingredientes.remove(i);
 
-        return  ingredientes;
+        return ingredientes;
     }
 
 

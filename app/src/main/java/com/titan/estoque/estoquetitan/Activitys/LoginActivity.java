@@ -30,6 +30,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.titan.estoque.estoquetitan.Banco.LogErro;
 import com.titan.estoque.estoquetitan.Comunicação.EnviarMulticast;
 import com.titan.estoque.estoquetitan.Comunicação.EnviarUnicast;
@@ -37,11 +39,13 @@ import com.titan.estoque.estoquetitan.Comunicação.ReceberUnicast;
 import com.titan.estoque.estoquetitan.ConexaoExterna.Conexao;
 import com.titan.estoque.estoquetitan.Objetos.Funcionario;
 import com.titan.estoque.estoquetitan.Objetos.Imagem;
+import com.titan.estoque.estoquetitan.Objetos.Ingrediente;
 import com.titan.estoque.estoquetitan.Objetos.Usuario;
 import com.titan.estoque.estoquetitan.Protocolos.Enviar.ConexaoRequest;
 import com.titan.estoque.estoquetitan.Protocolos.Enviar.WhoServer;
 import com.titan.estoque.estoquetitan.R;
 
+import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     private String mUsuario;
     private String mPassword;
     boolean sairAplicacao = true;
+    SharedPreferences mPrefs;
 
     // UI references.
     private EditText mEmailView;
@@ -103,6 +108,8 @@ public class LoginActivity extends AppCompatActivity {
         logAtivo= vivo = true;
         sharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(this);
+
+        mPrefs = getPreferences(MODE_PRIVATE);
 
         id_Entidade = Integer.parseInt(sharedPrefs.getString("Id_Entidade", "1"));
         IP_Entidade = getIPLocal();
@@ -167,8 +174,26 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(new ReceberUnicast(6004)).start();
         new Thread(new AtualizaConexao()).start();
         new AtualizaStatus().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        if (carregarDaMemoria() != null)
+        {
+            Intent intent = new Intent(LoginActivity.this, EstoqueActivity.class);
+            startActivity(intent);
+
+            sairAplicacao=false;
+            finish();
+        }
     }
 
+
+    List<Ingrediente> carregarDaMemoria() {
+        Gson gson = new Gson();
+        String json = mPrefs.getString("Ingredientes", "");
+        Type listType = new TypeToken<ArrayList<Ingrediente>>() {
+        }.getType();
+         List<Ingrediente> ing = gson.fromJson(json, listType);
+        return ing;
+    }
     public String getIPLocal()
     {
         WifiManager wim= (WifiManager) getSystemService(WIFI_SERVICE);

@@ -54,6 +54,7 @@
             <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatEditText
                 android:id="@+id/email"
                 android:singleLine="true"
+                android:text="titan"
                 android:maxLines="1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,6 +70,7 @@
                 android:id="@+id/password"
                 android:singleLine="true"
                 android:maxLines="1"
+                android:text="titan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/prompt_password"

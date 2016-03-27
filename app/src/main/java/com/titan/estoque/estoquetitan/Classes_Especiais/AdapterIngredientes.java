@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.annotation.UiThread;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -99,8 +100,10 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
         if(ingredientes.get(i).entrada) {
             holder.txt_entrada.setTextColor(Color.GREEN);
             holder.txt_entrada.setVisibility(View.VISIBLE);
-            String txt = "▲ +" + ingredientes.get(i).quantidadeEntrada + ingredientes.get(i).unidade + "  (R$" + ingredientes.get(i).valorEntrada *ingredientes.get(i).quantidadeEntrada + ")";
+            String txt = "▼ +" + ingredientes.get(i).quantidadeEntrada + ingredientes.get(i).unidade + "  (R$" + ingredientes.get(i).valorEntrada *ingredientes.get(i).quantidadeEntrada + ")";
             holder.txt_entrada.setText(txt);
+
+            // ▲
         }
         else
             holder.txt_entrada.setVisibility(View.GONE);

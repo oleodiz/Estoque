@@ -40,6 +40,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginRight="5dp"
+                android:foregroundGravity="center_vertical"
                 />
 
             <ProgressBar
@@ -83,7 +84,7 @@
                 android:id="@+id/txt_entrada"
                 android:textSize="15sp"
                 android:layout_toRightOf="@+id/img_ingrediente"
-                android:layout_below="@+id/txt_status"
+                android:layout_below="@+id/txt_quantidade"
                 android:visibility="gone"
                 />
 
@@ -98,27 +99,30 @@
 
                 <Button
                     android:id="@+id/btn_entrada"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:text="+"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/entrada"
                     android:textSize="12sp"
+                    android:layout_marginRight="2dp"
                     />
 
                 <Button
                     android:id="@+id/btn_saida"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:text="-"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:textSize="12sp"
+                    android:background="@drawable/saida"
                     android:layout_toRightOf="@+id/btn_entrada"
+                    android:layout_marginRight="2dp"
+
                     />
 
                 <Button
                     android:id="@+id/btn_informacao"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:text="i"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:textSize="12sp"
+                    android:background="@drawable/info"
                     android:layout_toRightOf="@+id/btn_saida"
                     />
 
