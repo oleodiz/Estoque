@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     private String mUsuario;
     private String mPassword;
     boolean sairAplicacao = true;
-    SharedPreferences mPrefs;
+    static SharedPreferences mPrefs;
 
     // UI references.
     private EditText mEmailView;
@@ -186,13 +186,22 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    List<Ingrediente> carregarDaMemoria() {
+    public static List<Ingrediente> carregarDaMemoria() {
         Gson gson = new Gson();
         String json = mPrefs.getString("Ingredientes", "");
         Type listType = new TypeToken<ArrayList<Ingrediente>>() {
         }.getType();
          List<Ingrediente> ing = gson.fromJson(json, listType);
         return ing;
+    }
+
+    public static void salvaNaMemoria(List<Ingrediente> listaIngredientes)
+    {
+        SharedPreferences.Editor prefsEditor = mPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(listaIngredientes);
+        prefsEditor.putString("Ingredientes", json);
+        prefsEditor.apply();
     }
     public String getIPLocal()
     {

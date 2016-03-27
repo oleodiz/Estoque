@@ -22,6 +22,7 @@ import com.titan.estoque.estoquetitan.Objetos.Imagem;
 import com.titan.estoque.estoquetitan.Objetos.Ingrediente;
 import com.titan.estoque.estoquetitan.R;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -31,9 +32,12 @@ import java.util.concurrent.Executors;
 public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngredientes.IngredienteViewHolder> {
     List<Ingrediente> ingredientes;
     Context context;
+    DecimalFormat df;
+
     public AdapterIngredientes(List<Ingrediente> ingredientes, Context context){
         this.ingredientes = ingredientes;
         this.context = context;
+        df = new DecimalFormat("00.00");
     }
 
     public static class IngredienteViewHolder extends RecyclerView.ViewHolder {
@@ -100,7 +104,8 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
         if(ingredientes.get(i).entrada) {
             holder.txt_entrada.setTextColor(Color.GREEN);
             holder.txt_entrada.setVisibility(View.VISIBLE);
-            String txt = "▼ +" + ingredientes.get(i).quantidadeEntrada + ingredientes.get(i).unidade + "  (R$" + ingredientes.get(i).valorEntrada *ingredientes.get(i).quantidadeEntrada + ")";
+            String valorMult = df.format(ingredientes.get(i).valorEntrada *ingredientes.get(i).quantidadeEntrada);
+            String txt = "▼ +" + ingredientes.get(i).quantidadeEntrada + ingredientes.get(i).unidade + "  (R$" + valorMult + ")";
             holder.txt_entrada.setText(txt);
 
             // ▲
@@ -130,7 +135,7 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
         protected Void doInBackground(Object... id) {
 
             img = LoginActivity.obterImagem((int) id[0]);
-            if (img == null)
+            if (img == null && LoginActivity.c != null)
                 img = LoginActivity.c.getImagem((int)id[0]);
             holder = (IngredienteViewHolder)id[1];
             publishProgress();

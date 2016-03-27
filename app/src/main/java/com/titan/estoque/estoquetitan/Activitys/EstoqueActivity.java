@@ -26,6 +26,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -58,7 +59,6 @@ public class EstoqueActivity extends AppCompatActivity
 
     enum Ordem {A_Z, Z_A, maiorEstoque, menorEstoque, filtrar}
 
-    SharedPreferences mPrefs;
 
     List<Ingrediente> listaIngredientes;
     List<Ingrediente> listaIngredientesOrdenados;
@@ -77,9 +77,9 @@ public class EstoqueActivity extends AppCompatActivity
     FlatButton btn_cancelar, btn_adiconarIngrediente;
     ScrollView scr_scroll;
     SearchView barraPesquisa;
-    View view_ingredienteSelecionado;
     Ingrediente IngredienteSelecioando;
-    Ordem ordem;
+    MenuItem action_status;
+    Button btn_processar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +87,12 @@ public class EstoqueActivity extends AppCompatActivity
         setContentView(R.layout.activity_estoque);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mPrefs = getPreferences(MODE_PRIVATE);
         lay_viewFlutuante = (LinearLayout) findViewById(R.id.lay_viewFlutuante);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         entra_sai_layout = inflater.inflate(R.layout.lay_entrada, lay_viewFlutuante, false);
 
         btn_flutuanteProcessar = (FloatingActionButton) findViewById(R.id.fab);
+        btn_processar = (Button) findViewById(R.id.btn_processar);
         btn_flutuanteProcessar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,7 +140,7 @@ public class EstoqueActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                //lay_viewFlutuante.removeView(entra_sai_layout);
+                lay_viewFlutuante.removeView(entra_sai_layout);
 
             }
         });
@@ -184,31 +184,15 @@ public class EstoqueActivity extends AppCompatActivity
 
                 new OrdenaFiltraEstoque().executeOnExecutor(Executors.newFixedThreadPool(4), filtrar);
 
-                salvaNaMemoria();
+                LoginActivity.salvaNaMemoria(listaIngredientes);
             }
 
         });
 
         new CarregaEstoque().executeOnExecutor(Executors.newFixedThreadPool(4));
+        new VerificaConexaoServidor().executeOnExecutor(Executors.newFixedThreadPool(4));
     }
 
-
-    List<Ingrediente> carregarDaMemoria() {
-        Gson gson = new Gson();
-        String json = mPrefs.getString("Ingredientes", "");
-        Type listType = new TypeToken<ArrayList<Ingrediente>>() {
-        }.getType();
-        return gson.fromJson(json, listType);
-    }
-
-    void salvaNaMemoria()
-    {
-        SharedPreferences.Editor prefsEditor = mPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(listaIngredientes);
-        prefsEditor.putString("Ingredientes", json);
-        prefsEditor.apply();
-    }
 
     @Override
     public void finish() {
@@ -226,9 +210,9 @@ public class EstoqueActivity extends AppCompatActivity
 
         @Override
         protected Boolean doInBackground(Void... vendas) {
-            List<Ingrediente> ingredientesSessaoAnterior = carregarDaMemoria();
+            List<Ingrediente> ingredientesSessaoAnterior =  LoginActivity.carregarDaMemoria();
             try {
-                if (LoginActivity.c == null || LoginActivity.c.conn.isClosed())
+                if (LoginActivity.IP_Server == null || LoginActivity.IP_Server.equals(""))
                     listaIngredientes = ingredientesSessaoAnterior;
                 else {
                     listaIngredientes = LoginActivity.c.getEstoque();
@@ -237,7 +221,7 @@ public class EstoqueActivity extends AppCompatActivity
                 return false;
             }
 
-            if (listaIngredientes != null && listaIngredientes.size() >0)
+            if (listaIngredientes != null && listaIngredientes.size() >0 && ingredientesSessaoAnterior != null)
                 for (int i =0; i < ingredientesSessaoAnterior.size(); i++)
                 {
                     for (int j =0; j < listaIngredientes.size(); j++)
@@ -257,6 +241,7 @@ public class EstoqueActivity extends AppCompatActivity
                         }
                     }
                 }
+            listaIngredientesOrdenados.clear();
             listaIngredientesOrdenados.addAll(listaIngredientes);
             publishProgress();
 
@@ -270,7 +255,8 @@ public class EstoqueActivity extends AppCompatActivity
                 adapterIngredientes = new AdapterIngredientes(listaIngredientesOrdenados, context);
 
             rec_listaEstoque.setAdapter(adapterIngredientes);
-            salvaNaMemoria();
+            if (listaIngredientes != null && listaIngredientes.size()>0)
+                LoginActivity.salvaNaMemoria(listaIngredientes);
         }
 
         @Override
@@ -336,7 +322,7 @@ public class EstoqueActivity extends AppCompatActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.estoque, menu);
 
-
+        action_status = menu.findItem(R.id.action_status);
         //Pega o Componente.
         barraPesquisa = (SearchView) menu.findItem(R.id.search)
                 .getActionView();
@@ -367,7 +353,13 @@ public class EstoqueActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_atualizar) {
+            new CarregaEstoque().executeOnExecutor(Executors.newFixedThreadPool(4));
+            return true;
+        }
+        if (id == R.id.action_status) {
+            Toast.makeText(context, "Sem conexão com o servidor de dados", Toast.LENGTH_LONG).show();
+
             return true;
         }
 
@@ -526,5 +518,45 @@ public class EstoqueActivity extends AppCompatActivity
         return ingredientes;
     }
 
+
+    private class VerificaConexaoServidor extends AsyncTask<Void, Boolean, Boolean> {
+        protected Boolean doInBackground(Void... urls) {
+            try {
+                while (LoginActivity.IP_Server != "a")
+                {
+                    if (LoginActivity.IP_Server == null || LoginActivity.IP_Server.equals("")) {
+                        publishProgress(false);
+                    } else if (!LoginActivity.ConexaoGerencia.equals("") && LoginActivity.ConexaoGerencia != null) {
+                        publishProgress(true);
+                    }
+                    Thread.sleep(3000);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        protected void onProgressUpdate(Boolean... status) {
+
+            if (status[0])
+            {
+                if (action_status != null && btn_processar != null) {
+                    action_status.setVisible(false);
+                    btn_processar.setVisibility(View.VISIBLE);
+                }
+            }
+           else
+            {
+                if (action_status != null && btn_processar != null) {
+                    action_status.setVisible(true);
+                    btn_processar.setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+
+        protected void onPostExecute(Boolean result) {
+        }
+    }
 
 }
