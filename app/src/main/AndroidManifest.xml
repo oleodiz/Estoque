@@ -29,9 +29,11 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-
         </activity>
-
+        <activity
+            android:name=".Activitys.InformacaoIngredienteActivity"
+            android:label="@string/title_activity_informacao_ingrediente"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

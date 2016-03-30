@@ -1,11 +1,12 @@
 package com.titan.estoque.estoquetitan.Classes_Especiais;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.annotation.UiThread;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.titan.estoque.estoquetitan.Activitys.InformacaoIngredienteActivity;
 import com.titan.estoque.estoquetitan.Activitys.LoginActivity;
 import com.titan.estoque.estoquetitan.Objetos.Imagem;
 import com.titan.estoque.estoquetitan.Objetos.Ingrediente;
@@ -48,6 +50,7 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
         TextView txt_quantidade;
         TextView txt_status;
         TextView txt_entrada;
+        TextView txt_saida;
         ImageView img_ingrediente;
         ProgressBar pro_carregaImg;
         Button btn_entrada;
@@ -61,6 +64,7 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
             txt_quantidade = (TextView)itemView.findViewById(R.id.txt_quantidade);
             txt_status = (TextView)itemView.findViewById(R.id.txt_status);
             txt_entrada = (TextView)itemView.findViewById(R.id.txt_entrada);
+            txt_saida = (TextView)itemView.findViewById(R.id.txt_saida);
             img_ingrediente = (ImageView)itemView.findViewById(R.id.img_ingrediente);
             pro_carregaImg = (ProgressBar)itemView.findViewById(R.id.pro_carregaImg);
             btn_entrada = (Button)itemView.findViewById(R.id.btn_entrada);
@@ -113,10 +117,37 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
         else
             holder.txt_entrada.setVisibility(View.GONE);
 
+        if(ingredientes.get(i).saida) {
+            holder.txt_saida.setTextColor(Color.RED);
+            holder.txt_saida.setVisibility(View.VISIBLE);
+            String txt = "▲ -" + ingredientes.get(i).quantidadeSaida+ ingredientes.get(i).unidade  ;
+            holder.txt_saida.setText(txt);
+        }
+        else
+            holder.txt_saida.setVisibility(View.GONE);
+
         holder.btn_entrada.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LoginActivity.telaEstoque.clickIngrediente(ingredientes.get(i).id_ingrediente);
+                LoginActivity.telaEstoque.clickIngredienteEntrada(ingredientes.get(i).id_ingrediente);
+            }
+        });
+
+        holder.btn_saida.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LoginActivity.telaEstoque.clickIngredienteSaida(ingredientes.get(i).id_ingrediente);
+            }
+        });
+
+        holder.btn_informacao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, InformacaoIngredienteActivity.class);
+                Bundle b = new Bundle();
+                b.putInt("IdIngrediente", ingredientes.get(i).id_ingrediente);
+                intent.putExtras(b);
+                context.startActivity(intent);
             }
         });
         holder.itemView.setTag(ingredientes.get(i));

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
+    xmlns:flatui="http://schemas.android.com/tools"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.titan.estoque.estoquetitan.Activitys.EstoqueActivity"
     tools:showIn="@layout/app_bar_estoque">
@@ -15,26 +14,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rec_listaEstoque"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="35dp"
         />
 
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
         android:layout_gravity="bottom"
         >
 
-        <Button
-            android:layout_marginLeft="3dp"
+        <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
             android:layout_gravity="left"
             android:id="@+id/btn_processar"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Processar"
-            android:textSize="15dp"
-            />
+            android:layout_marginLeft="5dp"
+            flatui:fontWeight="15dp"
+            flatui:blockButtonEffectHeight="3dp"
+            flatui:paddingEnd="20dp"
+            flatui:paddingStart="20dp"
+            flatui:theme="@array/red"/>
 
 
+        <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
+            android:layout_gravity="right"
+            android:id="@+id/btn_xml"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="XML"
+            android:layout_marginRight="5dp"
+            flatui:fontWeight="15dp"
+            flatui:blockButtonEffectHeight="3dp"
+            flatui:paddingEnd="20dp"
+            flatui:paddingStart="20dp"
+            flatui:theme="@array/red"/>
 
     </FrameLayout>
 

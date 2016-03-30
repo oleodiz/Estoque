@@ -137,6 +137,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:weightSum="2">
 
                 <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
@@ -146,6 +147,8 @@
                     android:layout_weight="1"
                     android:text="Cancelar"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="10dp"
                     flatui:fontWeight="20dp"
                     flatui:blockButtonEffectHeight="3dp"
                     flatui:paddingEnd="40dp"
@@ -157,8 +160,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Adicionar"
+                    android:text="Confirmar"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="5dp"
                     flatui:fontWeight="20dp"
                     flatui:blockButtonEffectHeight="3dp"
                     flatui:paddingEnd="40dp"
