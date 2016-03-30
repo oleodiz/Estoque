@@ -2,6 +2,7 @@ package com.titan.estoque.estoquetitan.Activitys;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -22,11 +23,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.titan.estoque.estoquetitan.Objetos.Ingrediente;
 import com.titan.estoque.estoquetitan.R;
+
+import java.util.ArrayList;
 
 public class InformacaoIngredienteActivity extends AppCompatActivity {
 
@@ -46,12 +56,13 @@ public class InformacaoIngredienteActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private int idIngrediente;
     private Ingrediente ingrediente;
+    public Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_informacao_ingrediente);
-
+        context = this;
         Bundle b = getIntent().getExtras();
         idIngrediente = b.getInt("IdIngrediente");
 
@@ -140,8 +151,53 @@ public class InformacaoIngredienteActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_informacao_ingrediente, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+
+
+            RelativeLayout lay_graficos = (RelativeLayout) rootView.findViewById(R.id.lay_graficos);
+            LineChart chart = new LineChart(getContext());
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT);
+            params.setMargins(5,0,5,60);
+            chart.setLayoutParams(params);
+
+            //GRAFICO PREENCHIMENTO
+            ArrayList<Entry> valsComp1 = new ArrayList<Entry>();
+            ArrayList<Entry> valsComp2 = new ArrayList<Entry>();
+
+            Entry c1e1 = new Entry(100.000f, 0); // 0 == quarter 1
+            valsComp1.add(c1e1);
+            Entry c1e2 = new Entry(50.000f, 1); // 1 == quarter 2 ...
+            valsComp1.add(c1e2);
+            // and so on ...
+
+            Entry c2e1 = new Entry(120.000f, 0); // 0 == quarter 1
+            valsComp2.add(c2e1);
+            Entry c2e2 = new Entry(110.000f, 1); // 1 == quarter 2 ...
+            valsComp2.add(c2e2);
+
+            LineDataSet setComp1 = new LineDataSet(valsComp1, "Company 1");
+            setComp1.setAxisDependency(YAxis.AxisDependency.LEFT);
+            setComp1.setColor(Color.RED);
+            LineDataSet setComp2 = new LineDataSet(valsComp2, "Company 2");
+            setComp2.setAxisDependency(YAxis.AxisDependency.LEFT);
+            setComp2.setColor(Color.GREEN);
+
+            // use the interface ILineDataSet
+            ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+            dataSets.add(setComp1);
+            dataSets.add(setComp2);
+
+            ArrayList<String> xVals = new ArrayList<String>();
+            xVals.add("1.Q"); xVals.add("2.Q"); xVals.add("3.Q"); xVals.add("4.Q");
+
+            LineData data = new LineData(xVals, dataSets);
+            chart.setData(data);
+            chart.setDescription("");
+            chart.invalidate();
+
+
+
+            lay_graficos.addView(chart);
+
             return rootView;
         }
     }
