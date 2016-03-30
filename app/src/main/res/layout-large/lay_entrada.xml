@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:flatui="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/lay_area_fora"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:background="#9a000000"
+        >
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/card_ingrediente">
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textSize="25sp"
+            android:text="ENTRADA"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:background="#0060ce"/>
+
+        <ScrollView
+            android:id="@+id/scr_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:id="@+id/img_ingrediente"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="5dp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_descricao"
+                    android:layout_toRightOf="@+id/img_ingrediente"
+                    android:layout_alignParentTop="true"
+                    android:textSize="25sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_quantidadeAtual"
+                    android:textSize="15sp"
+                    android:layout_toRightOf="@+id/img_ingrediente"
+                    android:layout_below="@+id/txt_descricao"/>
+            </RelativeLayout>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:text="Quant. Entrada:"
+                />
+
+            <EditText
+                android:layout_marginLeft="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1"
+                android:inputType="numberDecimal"
+                android:id="@+id/edt_quantidadeEntrada"
+                android:textSize="25sp" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:text="Valor Unitário:"
+                />
+            <com.blackcat.currencyedittext.CurrencyEditText
+                android:layout_marginLeft="10dp"
+                android:id="@+id/edt_valorEntrada"
+                android:textSize="25sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:allow_negative_values="false"
+                />
+
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:text="Data de Vencimento:"
+                />
+
+            <DatePicker
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/dat_dataVencimento"
+                android:datePickerMode="spinner"
+                android:calendarViewShown="false"
+                android:textSize="25sp" />
+
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2">
+
+                <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
+                    android:id="@+id/btn_cancelar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cancelar"
+                    android:layout_marginTop="20dp"
+                    flatui:fontWeight="30dp"
+                    flatui:blockButtonEffectHeight="3dp"
+                    flatui:paddingEnd="60dp"
+                    flatui:paddingStart="60dp"
+                    flatui:theme="@array/red"/>
+
+                <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
+                    android:id="@+id/btn_adicionar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Adicionar"
+                    android:layout_marginTop="20dp"
+                    flatui:fontWeight="30dp"
+                    flatui:blockButtonEffectHeight="3dp"
+                    flatui:paddingEnd="60dp"
+                    flatui:paddingStart="60dp"
+                    flatui:theme="@array/sky"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+
+</FrameLayout>
