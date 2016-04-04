@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Activitys.EstoqueActivity"
+            android:name=".Activitys.EntradaActivity"
             android:label="@string/title_activity_estoque"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -33,7 +33,9 @@
         <activity
             android:name=".Activitys.InformacaoIngredienteActivity"
             android:label="@string/title_activity_informacao_ingrediente"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activitys.XMLActivity" />
+        <activity android:name=".Activitys.MenuActivity"></activity>
     </application>
 
 </manifest>

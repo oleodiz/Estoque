@@ -6,13 +6,11 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.titan.estoque.estoquetitan.Banco.LogErro;
 import com.titan.estoque.estoquetitan.Comunicação.EnviarMulticast;
 import com.titan.estoque.estoquetitan.Comunicação.EnviarUnicast;
@@ -70,8 +68,8 @@ public class LoginActivity extends AppCompatActivity {
     static SharedPreferences mPrefs;
 
     // UI references.
-    private EditText mEmailView;
-    private EditText mPasswordView;
+    private MaterialEditText mEmailView;
+    private MaterialEditText mPasswordView;
     private View mLoginFormView;
     private View mLoginStatusView;
     private TextView mLoginStatusMessageView, txt_conexao;
@@ -89,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
     public static String ConexaoGerencia = "";
     public static String UsuarioGerencia;
     public static String SenhaGerencia;
-    public static EstoqueActivity telaEstoque;
+    public static EntradaActivity telaEstoque;
 
     public static Boolean logAtivo;
     public static Boolean vivo;
@@ -118,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
         imagens = new ArrayList<Imagem>();
         // Set up the login form.
         mUsuario = getIntent().getStringExtra(EXTRA_EMAIL);
-        mEmailView = (EditText) findViewById(R.id.email);
+        mEmailView = (MaterialEditText) findViewById(R.id.email);
         txt_conexao = (TextView) findViewById(R.id.txt_conexao);
         pgb_login = (ProgressBar) findViewById(R.id.pgb_login);
         lay_servidor = (LinearLayout) findViewById(R.id.lay_servidor);
@@ -126,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
         txt_conexao.setVisibility(View.INVISIBLE);
         pgb_login.setVisibility(View.INVISIBLE);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView = (MaterialEditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -177,7 +175,7 @@ public class LoginActivity extends AppCompatActivity {
 
         if (carregarDaMemoria() != null)
         {
-            Intent intent = new Intent(LoginActivity.this, EstoqueActivity.class);
+            Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
             startActivity(intent);
 
             sairAplicacao=false;
@@ -187,11 +185,18 @@ public class LoginActivity extends AppCompatActivity {
 
 
     public static List<Ingrediente> carregarDaMemoria() {
-        Gson gson = new Gson();
-        String json = mPrefs.getString("Ingredientes", "");
-        Type listType = new TypeToken<ArrayList<Ingrediente>>() {
-        }.getType();
-         List<Ingrediente> ing = gson.fromJson(json, listType);
+        List<Ingrediente> ing;
+        try {
+            Gson gson = new Gson();
+            String json = mPrefs.getString("Ingredientes", "");
+            Type listType = new TypeToken<ArrayList<Ingrediente>>() {
+            }.getType();
+            ing = gson.fromJson(json, listType);
+        }
+        catch (Exception e)
+        {
+            ing = new ArrayList<Ingrediente>();
+        }
         return ing;
     }
 
@@ -489,7 +494,7 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
 
             if (success == 0) {
-                Intent intent = new Intent(LoginActivity.this, EstoqueActivity.class);
+                Intent intent = new Intent(LoginActivity.this, MenuActivity.class);
                 startActivity(intent);
 
                 sairAplicacao=false;

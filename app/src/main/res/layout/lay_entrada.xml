@@ -34,7 +34,7 @@
             android:text="ENTRADA"
             android:textColor="#FFFFFF"
             android:textStyle="bold"
-            android:background="#0060ce"/>
+            android:background="#4472CF"/>
 
         <ScrollView
             android:id="@+id/scr_scroll"
@@ -75,42 +75,81 @@
                     android:textSize="15sp"
                     android:layout_toRightOf="@+id/img_ingrediente"
                     android:layout_below="@+id/txt_descricao"/>
+
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_toRightOf="@+id/txt_descricao"
+                    android:background="@drawable/informacao"
+                    android:gravity="right"
+                    />
             </RelativeLayout>
 
-            <TextView
-                android:layout_marginTop="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="Quant. Entrada:"
-                />
-
-            <EditText
-                android:layout_marginLeft="7dp"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1"
-                android:inputType="numberDecimal"
-                android:id="@+id/edt_quantidadeEntrada"
-                android:textSize="20sp" />
+                android:weightSum="2">
 
-            <TextView
-                android:layout_marginTop="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="Valor Unitário:"
-                />
-            <com.blackcat.currencyedittext.CurrencyEditText
-                android:layout_marginLeft="7dp"
-                android:id="@+id/edt_valorEntrada"
-                android:textSize="20sp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:allow_negative_values="false"
-                />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_marginTop="7dp"
+                        android:layout_marginLeft="7dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:text="Quant. Entrada:"
+                        />
+
+                    <EditText
+                        android:layout_marginLeft="7dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:inputType="numberDecimal"
+                        android:id="@+id/edt_quantidadeEntrada"
+                        android:textSize="20sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_marginTop="7dp"
+                        android:layout_marginLeft="7dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:text="Valor Unitário:"
+                        />
+                    <com.blackcat.currencyedittext.CurrencyEditText
+                        android:layout_marginLeft="7dp"
+                        android:id="@+id/edt_valorEntrada"
+                        android:textSize="20sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:allow_negative_values="false"
+                        />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+
+
 
 
             <TextView
@@ -140,7 +179,7 @@
                 android:layout_marginBottom="10dp"
                 android:weightSum="2">
 
-                <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
+                <com.gc.materialdesign.views.ButtonFlat
                     android:id="@+id/btn_cancelar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -148,14 +187,9 @@
                     android:text="Cancelar"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="5dp"
-                    android:layout_marginLeft="10dp"
-                    flatui:fontWeight="20dp"
-                    flatui:blockButtonEffectHeight="3dp"
-                    flatui:paddingEnd="40dp"
-                    flatui:paddingStart="40dp"
-                    flatui:theme="@array/red"/>
+                    android:layout_marginLeft="10dp"/>
 
-                <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
+                <com.gc.materialdesign.views.ButtonFlat
                     android:id="@+id/btn_adicionar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -163,12 +197,7 @@
                     android:text="Confirmar"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="10dp"
-                    android:layout_marginLeft="5dp"
-                    flatui:fontWeight="20dp"
-                    flatui:blockButtonEffectHeight="3dp"
-                    flatui:paddingEnd="40dp"
-                    flatui:paddingStart="40dp"
-                    flatui:theme="@array/sky"/>
+                    android:layout_marginLeft="5dp" />
 
             </LinearLayout>
 

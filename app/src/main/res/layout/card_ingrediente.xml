@@ -113,7 +113,7 @@
                     android:layout_height="30dp"
                     android:background="@drawable/entrada"
                     android:textSize="12sp"
-                    android:layout_marginRight="2dp"
+                    android:layout_marginRight="10dp"
                     />
 
                 <Button
@@ -123,10 +123,10 @@
                     android:textSize="12sp"
                     android:background="@drawable/saida"
                     android:layout_toRightOf="@+id/btn_entrada"
-                    android:layout_marginRight="2dp"
+                    android:layout_marginRight="10dp"
 
                     />
-
+<!--
                 <Button
                     android:id="@+id/btn_informacao"
                     android:layout_width="30dp"
@@ -135,7 +135,7 @@
                     android:background="@drawable/info"
                     android:layout_toRightOf="@+id/btn_saida"
                     />
-
+-->
                 </RelativeLayout>
 
         </LinearLayout>

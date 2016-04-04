@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.gc.materialdesign.views.ButtonFlat;
 import com.titan.estoque.estoquetitan.Activitys.InformacaoIngredienteActivity;
 import com.titan.estoque.estoquetitan.Activitys.LoginActivity;
 import com.titan.estoque.estoquetitan.Objetos.Imagem;
@@ -69,7 +70,7 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
             pro_carregaImg = (ProgressBar)itemView.findViewById(R.id.pro_carregaImg);
             btn_entrada = (Button)itemView.findViewById(R.id.btn_entrada);
             btn_saida = (Button)itemView.findViewById(R.id.btn_saida);
-            btn_informacao = (Button)itemView.findViewById(R.id.btn_informacao);
+           // btn_informacao = (Button)itemView.findViewById(R.id.btn_informacao);
         }
     }
 
@@ -139,7 +140,7 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
                 LoginActivity.telaEstoque.clickIngredienteSaida(ingredientes.get(i).id_ingrediente);
             }
         });
-
+        /*
         holder.btn_informacao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,6 +151,7 @@ public class AdapterIngredientes extends RecyclerView.Adapter<AdapterIngrediente
                 context.startActivity(intent);
             }
         });
+        */
         holder.itemView.setTag(ingredientes.get(i));
 
     }

@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:flatui="http://schemas.android.com/tools"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.titan.estoque.estoquetitan.Activitys.EstoqueActivity"
+    tools:context=".Activitys.EntradaActivity"
     tools:showIn="@layout/app_bar_estoque">
 
     <android.support.v7.widget.RecyclerView
@@ -14,52 +13,91 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rec_listaEstoque"
-        android:layout_marginBottom="35dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="70dp"
         />
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
-        android:layout_gravity="bottom"
-        >
-
-        <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
-            android:layout_gravity="left"
-            android:id="@+id/btn_processar"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="Processar"
-            android:layout_marginLeft="5dp"
-            flatui:fontWeight="15dp"
-            flatui:blockButtonEffectHeight="3dp"
-            flatui:paddingEnd="20dp"
-            flatui:paddingStart="20dp"
-            flatui:theme="@array/red"/>
-
-
-        <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
-            android:layout_gravity="right"
-            android:id="@+id/btn_xml"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:text="XML"
-            android:layout_marginRight="5dp"
-            flatui:fontWeight="15dp"
-            flatui:blockButtonEffectHeight="3dp"
-            flatui:paddingEnd="20dp"
-            flatui:paddingStart="20dp"
-            flatui:theme="@array/red"/>
-
-    </FrameLayout>
-
-    <LinearLayout
         android:orientation="vertical"
-        android:id="@+id/lay_viewFlutuante"
-        android:layout_gravity="center"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_gravity="bottom">
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:weightSum="3"
+            android:orientation="horizontal"
+            android:layout_gravity="bottom"
+            >
+
+            <com.gc.materialdesign.views.ButtonFlat
+                android:layout_gravity="left"
+                android:id="@+id/btn_fornecedor"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Fornecedor"
+                android:layout_marginLeft="5dp"/>
+
+            <com.gc.materialdesign.views.ButtonFlat
+                android:layout_gravity="left"
+                android:id="@+id/btn_fatura"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Fatura"
+                android:layout_marginLeft="5dp"/>
+
+            <com.gc.materialdesign.views.ButtonFlat
+                android:layout_gravity="center"
+                android:id="@+id/btn_nota"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Nota"
+                android:layout_marginRight="5dp"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_gravity="bottom"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            >
+
+            <com.gc.materialdesign.views.ButtonFlat
+                android:layout_gravity="left"
+                android:id="@+id/btn_processar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Processar"
+                android:layout_marginLeft="5dp"/>
+
+            <com.gc.materialdesign.views.ButtonFlat
+                android:layout_gravity="right"
+                android:id="@+id/btn_xml"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="XML"
+                android:layout_marginRight="5dp"/>
+        </LinearLayout>
+
+        </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/lay_viewFlutuante"
+                android:layout_gravity="center"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+            </LinearLayout>
 
 </FrameLayout>

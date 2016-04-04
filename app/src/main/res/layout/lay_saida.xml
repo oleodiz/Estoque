@@ -105,7 +105,8 @@
                     android:layout_marginBottom="10dp"
                     android:weightSum="2">
 
-                    <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
+
+                    <com.gc.materialdesign.views.ButtonFlat
                         android:id="@+id/btn_cancelar"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -113,14 +114,10 @@
                         android:text="Cancelar"
                         android:layout_marginRight="5dp"
                         android:layout_marginLeft="10dp"
-                        android:layout_marginTop="10dp"
-                        flatui:fontWeight="20dp"
-                        flatui:blockButtonEffectHeight="3dp"
-                        flatui:paddingEnd="40dp"
-                        flatui:paddingStart="40dp"
-                        flatui:theme="@array/red"/>
+                        android:layout_marginTop="10dp" />
 
-                    <com.titan.estoque.estoquetitan.Classes_Especiais.flatui.views.FlatButton
+
+                    <com.gc.materialdesign.views.ButtonFlat
                         android:id="@+id/btn_remover"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -128,12 +125,7 @@
                         android:text="Confirmar"
                         android:layout_marginTop="10dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginLeft="5dp"
-                        flatui:fontWeight="20dp"
-                        flatui:blockButtonEffectHeight="3dp"
-                        flatui:paddingEnd="40dp"
-                        flatui:paddingStart="40dp"
-                        flatui:theme="@array/sky"/>
+                        android:layout_marginLeft="5dp"  />
 
                 </LinearLayout>
 
